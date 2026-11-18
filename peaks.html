@@ -363,11 +363,9 @@ const RAW = [
 ["Bunker Hill","Toiyabe Range","o",2813,"March 7, 2020","W Spires, NE Face, S Face","midseason-moments","bunker-hill.webp",-117.1258,39.25253],
 ["Dogskin","Dogskin Ridge","o",2057,"March 7, 2020","E Gully","","dogskin.webp",-119.7762,39.88494],
 ["N. Shoshone Peak","Shoshone Mountains","o",2853,"March 23, 2019","NW Bowl","","n-shoshone-peak.webp",-117.4799,39.1503],
-["Copper Mountain","Copper Mountains","o",1470,"March 29, 2026","E Face, N Bowls","copper","copper-mountain.webp",-115.52075,41.77088]
+["Copper Mountain","Copper Mountains","o",1470,"March 29, 2026","E Face, N Bowls","copper","copper-mountain.webp",-115.52075,41.77088],
 ["Pt 9533","Independence Mountains","o",,"January 21, 2025","N Bowls","desert-headwaters","pt9533.webp",-115.95022,41.55766],
 ["Pt 7159","Wild Horse Range","o",,"January 20, 2025","N Gullies","desert-headwaters","pt7159.webp",41.69134, -115.86868]
-
-
 ];
 const PEAKS = RAW.map((r, i) => ({ id: i, name: r[0], st: r[1], prom: r[2], date: r[3], lines: r[4],
   report: r[5] ? TR + r[5] : '', photo: r[6] ? UP + r[6] : '', lon: r[7], lat: r[8],
