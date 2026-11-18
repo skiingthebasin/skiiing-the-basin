@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skiing the Basin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f0e9d8; --paper-deep: #e6dcc4; --ink: #2b2820; --ink-soft: #4a4538;
+  --contour: #a8956a; --contour-dark: #6b5a3a; --accent: #a23b2a; --accent-soft: #c97a4a; --water: #a8b8c4;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100vh; font-family: var(--font-body); color: var(--ink); background: var(--paper); }
+.app { min-height: 100vh; display: flex; flex-direction: column;
+  background: radial-gradient(ellipse at top left, rgba(0,0,0,0.02), transparent 60%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.03), transparent 60%), var(--paper); }
+.app::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 3px), repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 3px); }
+
+/* Header */
+.hdr { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 18px 32px; border-bottom: 1.5px solid var(--contour-dark); background: var(--paper); position: relative; z-index: 10; }
+.hdr-left { display: flex; align-items: center; gap: 24px; }
+.wordmark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+.wm-mono { font-family: var(--font-mono); font-size: 22px; font-weight: 700; letter-spacing: 0.05em; }
+.wm-divider { color: var(--contour); font-size: 18px; }
+.wm-name { font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--ink-soft); letter-spacing: -0.01em; white-space: nowrap; }
+
+.nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav a { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; background: transparent; border: 1px solid transparent; padding: 8px 14px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; white-space: nowrap; text-decoration: none; }
+.nav a:hover { color: var(--ink); border-color: var(--contour); }
+.nav a.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Hero Section */
+main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 64px 24px; position: relative; z-index: 2; }
+.hero { max-width: 720px; width: 100%; background: var(--paper-deep); border: 1.5px solid var(--contour-dark); padding: 48px; box-shadow: 0 12px 32px rgba(43,40,32,0.06); }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 16px; font-weight: 700; }
+h1 { font-family: var(--font-display); font-size: 48px; font-weight: 400; letter-spacing: -0.03em; margin: 0 0 20px; line-height: 1.08; }
+p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 32px; }
+.cta-group { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; padding: 14px 24px; text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--ink); color: var(--paper); border: 1px solid var(--ink); }
+.btn-primary:hover { background: var(--accent); border-color: var(--accent); }
+.btn-secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--contour-dark); }
+.btn-secondary:hover { background: var(--contour); color: var(--paper); }
+
+@media (max-width: 768px) {
+  .hero { padding: 32px 24px; }
+  h1 { font-size: 36px; }
+  .hdr { padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-left">
+      <a class="wordmark" href="index.html">
+        <span class="wm-mono">STB</span><span class="wm-divider">·</span><span class="wm-name">Skiing the Basin</span>
+      </a>
+    </div>
+    <nav class="nav">
+      <a class="active" href="index.html" aria-current="page">The Project</a>
+      <a href="peaks.html">The Peaks</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Backcountry Ski Project</div>
+      <h1>Skiing the Great Basin</h1>
+      <p>Exploring, mapping, and skiing prominent mountain ranges across Nevada. A custom-built log of peaks climbed, lines skied, and high-desert winter travels.</p>
+      <div class="cta-group">
+        <a class="btn btn-primary" href="peaks.html">Explore the Peaks Map →</a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
