@@ -9,8 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper: #f0e9d8; --paper-deep: #e6dcc4; --ink: #2b2820; --ink-soft: #4a4538;
-  --contour: #a8956a; --contour-dark: #6b5a3a; --accent: #a23b2a; --accent-soft: #c97a4a; --water: #a8b8c4;
+  /* Sage Gray-Green Great Basin Palette */
+  --paper: #e3e7e2; 
+  --paper-deep: #d4dad3; 
+  --ink: #29302c; 
+  --ink-soft: #48524c;
+  --contour: #95a399; 
+  --contour-dark: #5c6b61; 
+  --accent: #8c3b32; 
+  --accent-soft: #a86259; 
+  --water: #9ab0b8;
+
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Inter", -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Courier New", monospace;
@@ -19,7 +28,7 @@
 html, body { margin: 0; padding: 0; height: 100%; font-family: var(--font-body); color: var(--ink); background: var(--paper); }
 a { color: inherit; }
 .app { height: 100vh; display: flex; flex-direction: column;
-  background: radial-gradient(ellipse at top left, rgba(0,0,0,0.02), transparent 60%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.03), transparent 60%), var(--paper); }
+  background: radial-gradient(ellipse at top left, rgba(0,0,0,0.015), transparent 60%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.025), transparent 60%), var(--paper); }
 .app::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
   background-image: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 3px), repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 3px); }
 
@@ -173,7 +182,7 @@ td a:hover { text-decoration: underline; }
 <div class="app">
   <header class="hdr">
     <div class="hdr-left">
-      <a class="wordmark" href="https://skiingthebasin.com/">
+      <a class="wordmark" href="index.html">
         <span class="wm-mono">STB</span><span class="wm-divider">·</span><span class="wm-name">Skiing the Basin</span>
       </a>
       <div class="counter">
@@ -182,12 +191,11 @@ td a:hover { text-decoration: underline; }
       </div>
     </div>
     <nav class="nav">
-      <a href="https://skiingthebasin.com/">The Project</a>
-      <a class="active" href="https://skiingthebasin.com/the-peaks/" aria-current="page">The Peaks</a>
-      <a href="https://skiingthebasin.com/the-people/">The People</a>
-      <a href="https://skiingthebasin.com/photos/">The Photos</a>
-      <a href="https://skiingthebasin.com/supporters/">Supporters</a>
-      <a href="https://skiingthebasin.com/contact/">Contact</a>
+      <a href="index.html">The Project</a>
+      <a class="active" href="peaks.html" aria-current="page">The Peaks</a>
+      <a href="people.html">The People</a>
+      <a href="supporters.html">Supporters</a>
+      <a href="contact.html">Contact</a>
     </nav>
   </header>
 
@@ -213,14 +221,14 @@ td a:hover { text-decoration: underline; }
           <button id="zReset" aria-label="Reset view">⌂</button>
         </div>
         <div class="compass">
-          <svg width="30" height="38" viewBox="0 0 30 38"><text x="15" y="7" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#4a4538">N</text><circle cx="15" cy="23" r="12" fill="none" stroke="#6b5a3a" stroke-width="0.8"/><line x1="15" y1="11" x2="15" y2="35" stroke="#6b5a3a" stroke-width="0.5"/><line x1="3" y1="23" x2="27" y2="23" stroke="#6b5a3a" stroke-width="0.5"/><path d="M15 12 L18 23 L12 23 Z" fill="#a23b2a"/></svg>
+          <svg width="30" height="38" viewBox="0 0 30 38"><text x="15" y="7" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#48524c">N</text><circle cx="15" cy="23" r="12" fill="none" stroke="#5c6b61" stroke-width="0.8"/><line x1="15" y1="11" x2="15" y2="35" stroke="#5c6b61" stroke-width="0.5"/><line x1="3" y1="23" x2="27" y2="23" stroke="#5c6b61" stroke-width="0.5"/><path d="M15 12 L18 23 L12 23 Z" fill="#8c3b32"/></svg>
         </div>
         <div class="scale"><div class="scale-row"><span>0</span><span>50 mi</span></div><div class="scale-bar" id="scaleBar"></div></div>
         <div class="legend">
           <div class="legend-title">LEGEND</div>
-          <div class="legend-row"><svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#a23b2a" stroke="#2b2820" stroke-width="1"/><circle cy="1.5" r="1.8" fill="#f0e9d8"/></svg><span>Project peaks skied</span></div>
-          <div class="legend-row"><svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#6b5a3a" stroke="#2b2820" stroke-width="1"/></svg><span>Random basin peaks skied</span></div>
-          <div class="legend-row"><svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#f0e9d8" stroke="#4a4538" stroke-width="1.4"/></svg><span>Unskied project peaks</span></div>
+          <div class="legend-row"><svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#8c3b32" stroke="#29302c" stroke-width="1"/><circle cy="1.5" r="1.8" fill="#e3e7e2"/></svg><span>Project peaks skied</span></div>
+          <div class="legend-row"><svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#5c6b61" stroke="#29302c" stroke-width="1"/></svg><span>Random basin peaks skied</span></div>
+          <div class="legend-row"><svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#e3e7e2" stroke="#48524c" stroke-width="1.4"/></svg><span>Unskied project peaks</span></div>
         </div>
         <div class="tooltip" id="tip" hidden></div>
       </div>
@@ -261,9 +269,6 @@ td a:hover { text-decoration: underline; }
 </div>
 
 <script>
-/* ---------- Data (from stb_peaks_5_7_26.geojson) ----------
-   [name, status (s = project skied, o = random basin peak, u = unskied project peak),
-    prominence ft, date skied, lines skied, trip report slug, photo path, lon, lat] */
 const UP = 'https://skiingthebasin.com/wp-content/uploads/';
 const TR = 'https://threebrothers.exposure.co/';
 const RAW = [
@@ -377,34 +382,29 @@ let vb = { ...BASE };
 const svg = document.getElementById('map');
 const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; };
 
-// Approximate Nevada outline (lon, lat)
 const NV = [[-120.0,42.0],[-117.03,42.0],[-114.04,42.0],[-114.05,37.0],[-114.05,36.19],[-114.14,36.03],[-114.24,36.02],[-114.37,36.14],[-114.57,36.15],[-114.74,36.10],[-114.74,36.0],[-114.70,35.85],[-114.68,35.69],[-114.65,35.55],[-114.57,35.14],[-114.63,35.0],[-120.0,39.0]];
 const nvPath = 'M' + NV.map(p => px(p[0]).toFixed(1) + ',' + py(p[1]).toFixed(1)).join('L') + 'Z';
 
 const defs = el('defs', {});
 el('path', { d: nvPath }, el('clipPath', { id: 'nvClip' }, defs));
 const pat = el('pattern', { id: 'hatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
-el('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: '#a8956a', 'stroke-width': 0.6, opacity: 0.35 }, pat);
+el('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: '#95a399', 'stroke-width': 0.6, opacity: 0.35 }, pat);
 
-// Graticule
 const grat = el('g', {});
 for (let lon = -120; lon <= -114; lon++) {
-  el('line', { x1: px(lon), y1: -2000, x2: px(lon), y2: 3000, stroke: '#a8956a', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
+  el('line', { x1: px(lon), y1: -2000, x2: px(lon), y2: 3000, stroke: '#95a399', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
   el('text', { x: px(lon) + 3, y: py(34.78), class: 'grat-label' }, grat).textContent = Math.abs(lon) + '°W';
 }
 for (let lat = 35; lat <= 42; lat++) {
-  el('line', { x1: -2000, y1: py(lat), x2: 3000, y2: py(lat), stroke: '#a8956a', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
+  el('line', { x1: -2000, y1: py(lat), x2: 3000, y2: py(lat), stroke: '#95a399', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
   el('text', { x: px(-113.62), y: py(lat) - 3, class: 'grat-label' }, grat).textContent = lat + '°N';
 }
-// State
-el('path', { d: nvPath, fill: '#e6dcc4' });
+el('path', { d: nvPath, fill: '#d4dad3' });
 el('path', { d: nvPath, fill: 'url(#hatch)' });
-// Lakes (approximate, decorative)
-const lakes = el('g', { 'clip-path': 'url(#nvClip)', fill: '#a8b8c4', stroke: '#6b5a3a', 'stroke-width': 0.5, 'vector-effect': 'non-scaling-stroke' });
+const lakes = el('g', { 'clip-path': 'url(#nvClip)', fill: '#9ab0b8', stroke: '#5c6b61', 'stroke-width': 0.5, 'vector-effect': 'non-scaling-stroke' });
 [[-120.03,39.09,7,15,0],[-119.56,40.06,6,14,-15],[-118.71,38.70,3.5,10,-10]].forEach(l =>
   el('ellipse', { cx: px(l[0]), cy: py(l[1]), rx: l[2], ry: l[3], transform: `rotate(${l[4]} ${px(l[0])} ${py(l[1])})` }, lakes));
-el('path', { d: nvPath, fill: 'none', stroke: '#2b2820', 'stroke-width': 1.4, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
-// Neighbours
+el('path', { d: nvPath, fill: 'none', stroke: '#29302c', 'stroke-width': 1.4, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
 [['OREGON',-118.6,42.25],['IDAHO',-115.6,42.25],['UTAH',-113.72,39.6],['ARIZONA',-113.8,35.6],['CALIFORNIA',-119.2,37.2]].forEach(s => {
   const t = el('text', { x: px(s[1]), y: py(s[2]), class: 'state-label', 'text-anchor': 'middle' });
   if (s[0] === 'CALIFORNIA') t.setAttribute('transform', `rotate(43 ${px(s[1])} ${py(s[2])})`);
@@ -414,17 +414,16 @@ el('path', { d: nvPath, fill: 'none', stroke: '#2b2820', 'stroke-width': 1.4, 's
 const nvLabel = el('text', { x: px(-116.6), y: py(37.35), class: 'state-label', 'text-anchor': 'middle' });
 nvLabel.textContent = 'NEVADA'; nvLabel.style.fontSize = '22px'; nvLabel.style.opacity = 0.3;
 
-// Markers
 const layer = el('g', {});
 const order = { u: 0, o: 1, s: 2 };
 const markers = {};
 [...PEAKS].sort((a, b) => order[a.st] - order[b.st] || b.lat - a.lat).forEach(p => {
   const g = el('g', { class: 'peak', 'data-id': p.id, tabindex: 0, role: 'button', 'aria-label': p.name }, layer);
   el('circle', { r: 13, fill: 'transparent' }, g);
-  el('circle', { class: 'ring', r: 14, cy: -1, fill: 'none', stroke: '#2b2820', 'stroke-width': 1, 'stroke-dasharray': '2 2' }, g);
-  if (p.st === 's') { el('path', { d: 'M0 -9 L8 6 L-8 6 Z', fill: '#a23b2a', stroke: '#2b2820', 'stroke-width': 0.8, 'stroke-linejoin': 'round' }, g); el('circle', { cy: 1.5, r: 1.8, fill: '#f0e9d8' }, g); }
-  else if (p.st === 'o') el('path', { d: 'M0 -6.5 L6 4.5 L-6 4.5 Z', fill: '#6b5a3a', stroke: '#2b2820', 'stroke-width': 0.8, 'stroke-linejoin': 'round' }, g);
-  else el('path', { d: 'M0 -9 L8 6 L-8 6 Z', fill: '#f0e9d8', stroke: '#4a4538', 'stroke-width': 1.2, 'stroke-linejoin': 'round' }, g);
+  el('circle', { class: 'ring', r: 14, cy: -1, fill: 'none', stroke: '#29302c', 'stroke-width': 1, 'stroke-dasharray': '2 2' }, g);
+  if (p.st === 's') { el('path', { d: 'M0 -9 L8 6 L-8 6 Z', fill: '#8c3b32', stroke: '#29302c', 'stroke-width': 0.8, 'stroke-linejoin': 'round' }, g); el('circle', { cy: 1.5, r: 1.8, fill: '#e3e7e2' }, g); }
+  else if (p.st === 'o') el('path', { d: 'M0 -6.5 L6 4.5 L-6 4.5 Z', fill: '#5c6b61', stroke: '#29302c', 'stroke-width': 0.8, 'stroke-linejoin': 'round' }, g);
+  else el('path', { d: 'M0 -9 L8 6 L-8 6 Z', fill: '#e3e7e2', stroke: '#48524c', 'stroke-width': 1.2, 'stroke-linejoin': 'round' }, g);
   el('text', { class: 'peak-label', y: 16, 'text-anchor': 'middle' }, g).textContent = p.name;
   markers[p.id] = g;
 });
@@ -433,8 +432,8 @@ const scaleBar = document.getElementById('scaleBar');
 function render() {
   svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
   const r = svg.getBoundingClientRect();
-  const ppu = Math.min(r.width / vb.w, r.height / vb.h) || 1;   // screen px per map unit
-  const k = Math.min(1.25, 1 / ppu);                             // keep markers a constant screen size
+  const ppu = Math.min(r.width / vb.w, r.height / vb.h) || 1;
+  const k = Math.min(1.25, 1 / ppu);
   PEAKS.forEach(p => markers[p.id].setAttribute('transform', `translate(${px(p.lon).toFixed(2)} ${py(p.lat).toFixed(2)}) scale(${k.toFixed(4)})`));
   svg.classList.toggle('labels', ppu > 2.3);
   scaleBar.style.width = Math.max(10, (50 / 69.0) * S * ppu) + 'px';
@@ -452,7 +451,6 @@ document.getElementById('zIn').onclick = () => zoomAt(1 / 1.5);
 document.getElementById('zOut').onclick = () => zoomAt(1.5);
 document.getElementById('zReset').onclick = () => { vb = { ...BASE }; render(); };
 
-// Pan, pinch, click
 const ptrs = new Map(); let moved = 0, pinch = 0;
 svg.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, e); moved = 0; pinch = 0; });
 window.addEventListener('pointermove', e => {
@@ -472,7 +470,6 @@ window.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); pinch 
 svg.addEventListener('click', e => { if (moved > 4) return; const g = e.target.closest('.peak'); if (g) select(+g.dataset.id); });
 svg.addEventListener('keydown', e => { const g = e.target.closest('.peak'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); select(+g.dataset.id); } });
 
-// Tooltip
 const tip = document.getElementById('tip'), wrap = document.getElementById('mapWrap');
 const hideTip = () => { tip.hidden = true; };
 svg.addEventListener('pointermove', e => {
@@ -483,14 +480,13 @@ svg.addEventListener('pointermove', e => {
 });
 svg.addEventListener('pointerleave', hideTip);
 
-/* ---------- Detail panel ---------- */
 const panel = document.getElementById('panel');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const dms = (v, pos, neg) => { const a = Math.abs(v), d = Math.floor(a), m = Math.round((a - d) * 60); return (v >= 0 ? pos : neg) + ' ' + d + '°' + String(m).padStart(2, '0') + "'"; };
 let selected = null;
 function emptyPanel() {
   panel.innerHTML = `<div class="empty-card">
-    <svg width="34" height="30" viewBox="-12 -12 24 22" opacity="0.6"><path d="M0 -9 L8 6 L-8 6 Z" fill="none" stroke="#4a4538" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    <svg width="34" height="30" viewBox="-12 -12 24 22" opacity="0.6"><path d="M0 -9 L8 6 L-8 6 Z" fill="none" stroke="#48524c" stroke-width="1.4" stroke-linejoin="round"/></svg>
     <h3 class="empty-title">Select a peak</h3>
     <p class="empty-body">Click any marker on the map to see prominence, date, lines skied, and the trip report. Red triangles are project peaks already skied; outlined ones are still on the list.</p>
   </div>`;
@@ -526,16 +522,15 @@ function select(id) {
   panel.querySelector('.panel-close').onclick = () => select(null);
 }
 
-/* ---------- Ledger ---------- */
 const rows = document.getElementById('rows');
 let filter = 'all', sort = { key: 'date', dir: -1 };
-const glyph = { s: '<svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#a23b2a" stroke="#2b2820"/></svg>',
-  o: '<svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#6b5a3a" stroke="#2b2820"/></svg>',
-  u: '<svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#f0e9d8" stroke="#4a4538" stroke-width="1.4"/></svg>' };
+const glyph = { s: '<svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#8c3b32" stroke="#29302c"/></svg>',
+  o: '<svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#5c6b61" stroke="#29302c"/></svg>',
+  u: '<svg width="14" height="14" viewBox="-10 -11 20 20"><path d="M0 -9 L8 6 L-8 6 Z" fill="#e3e7e2" stroke="#48524c" stroke-width="1.4"/></svg>' };
 function drawLedger() {
   const val = { name: p => p.name.toLowerCase(), prom: p => p.prom, date: p => p.ts }[sort.key];
   const list = PEAKS.filter(p => filter === 'all' || p.st === filter).sort((a, b) => {
-    if ((a.st === 'u') !== (b.st === 'u') && sort.key !== 'name') return a.st === 'u' ? 1 : -1;  // unskied last
+    if ((a.st === 'u') !== (b.st === 'u') && sort.key !== 'name') return a.st === 'u' ? 1 : -1;
     const x = val(a), y = val(b); return (x < y ? -1 : x > y ? 1 : 0) * sort.dir || a.name.localeCompare(b.name);
   });
   rows.innerHTML = list.map(p => `<tr data-id="${p.id}">
@@ -555,7 +550,6 @@ rows.onclick = e => { if (e.target.closest('a')) return; const tr = e.target.clo
   const p = PEAKS[+tr.dataset.id]; show('map'); const w = BASE.w / 3.2, h = BASE.h / 3.2;
   vb = { x: px(p.lon) - w / 2, y: py(p.lat) - h / 2, w, h }; render(); select(p.id); };
 
-/* ---------- Views ---------- */
 function show(v) {
   document.getElementById('viewMap').hidden = v !== 'map';
   document.getElementById('viewLedger').hidden = v !== 'ledger';
