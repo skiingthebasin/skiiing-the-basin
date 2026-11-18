@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Project · Skiing the Basin</title>
+<title>The Peaks · Skiing the Basin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,159 +19,164 @@
   --accent: #8c3b32; 
   --accent-soft: #a86259; 
   --water: #9ab0b8;
-  
+
+  /* Peak Marker Colors */
+  --rabbitbrush: #d49b27;
+  --sand: #c2b28f;
+
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Inter", -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Courier New", monospace;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; min-height: 100vh; font-family: var(--font-body); color: var(--ink); background: var(--paper); }
-a { color: inherit; text-decoration: none; }
-.app { min-height: 100vh; display: flex; flex-direction: column;
+html, body { margin: 0; padding: 0; height: 100%; font-family: var(--font-body); color: var(--ink); background: var(--paper); }
+a { color: inherit; }
+.app { height: 100vh; display: flex; flex-direction: column;
   background: radial-gradient(ellipse at top left, rgba(0,0,0,0.015), transparent 60%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.025), transparent 60%), var(--paper); }
+.app::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 3px), repeating-linear-gradient(90deg, transparent 0, transparent 2px, rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 3px); }
 
 /* Header */
 .hdr { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 18px 32px; border-bottom: 1.5px solid var(--contour-dark); background: var(--paper); position: relative; z-index: 10; }
+.hdr::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: var(--contour-dark); opacity: 0.4; }
 .hdr-left { display: flex; align-items: center; gap: 24px; }
 .wordmark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
 .wm-mono { font-family: var(--font-mono); font-size: 22px; font-weight: 700; letter-spacing: 0.05em; }
 .wm-divider { color: var(--contour); font-size: 18px; }
 .wm-name { font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--ink-soft); letter-spacing: -0.01em; white-space: nowrap; }
-
+.counter { display: flex; align-items: baseline; gap: 6px; padding: 6px 14px; border: 1px solid var(--contour-dark); background: var(--paper-deep); font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+.counter-num { font-size: 20px; font-weight: 700; color: var(--rabbitbrush); text-shadow: 0 0 1px rgba(41,48,44,0.4); }
+.counter-div { color: var(--contour); }
+.counter-total { font-size: 16px; font-weight: 600; }
+.counter-label { margin-left: 6px; color: var(--ink-soft); font-size: 10px; }
 .nav { display: flex; gap: 4px; flex-wrap: wrap; }
-.nav a { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; background: transparent; border: 1px solid transparent; padding: 8px 14px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
-.nav a:hover { color: var(--ink); border-color: var(--contour); }
-.nav a.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.nav a, .tab { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; background: transparent; border: 1px solid transparent; padding: 8px 14px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; white-space: nowrap; text-decoration: none; }
+.nav a:hover, .tab:hover { color: var(--ink); border-color: var(--contour); }
+.nav a.active, .tab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
-/* Main Hero Banner with Photo & Logo */
-.hero-bg {
-  position: relative;
-  width: 100%;
-  min-height: 480px;
-  background-image: url('images/jarbidge-18.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 60px 64px;
-  border-bottom: 1.5px solid var(--contour-dark);
-}
-.hero-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(41,48,44,0.4) 0%, rgba(41,48,44,0.7) 100%);
-  z-index: 1;
-}
-.hero-logo-wrap {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.hero-logo-wrap img {
-  max-width: 320px;
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));
-}
+/* Sub bar */
+.subbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 32px; border-bottom: 1px solid var(--contour); background: var(--paper); position: relative; z-index: 5; }
+.subbar-title { font-family: var(--font-display); font-size: 22px; letter-spacing: -0.02em; }
+.subbar-title em { font-size: 14px; color: var(--ink-soft); margin-left: 10px; }
+.tabs { display: flex; gap: 4px; }
 
-/* Content Container */
-.content-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 60px 24px;
-  width: 100%;
-}
+main { flex: 1; min-height: 0; position: relative; z-index: 2; display: flex; flex-direction: column; }
+main > * { flex: 1; min-height: 0; }
+[hidden] { display: none !important; }
 
-/* Text Section Styles */
-.section-block {
-  margin-bottom: 48px;
-}
-.section-block h2 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin: 0 0 12px;
-  color: var(--ink);
-}
-.section-block p {
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--ink-soft);
-  margin: 0;
-}
+/* Map view */
+.map-view { display: grid; grid-template-columns: 1fr 420px; height: 100%; }
+.map-wrap { position: relative; overflow: hidden; border-right: 1.5px solid var(--contour-dark); display: flex; min-height: 0; }
+.map-wrap > svg { flex: 1; width: 100%; height: 100%; min-height: 0; cursor: grab; touch-action: none; user-select: none; }
+.map-wrap > svg.dragging { cursor: grabbing; }
+.corners { position: absolute; inset: 12px; pointer-events: none; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; color: var(--ink-soft); }
+.corners div { position: absolute; }
+.c-tl { top: 0; left: 0; } .c-tr { top: 0; right: 0; } .c-bl { bottom: 0; left: 0; } .c-br { bottom: 0; right: 0; }
+.zoom { position: absolute; top: 12px; left: 12px; display: flex; flex-direction: column; gap: 4px; }
+.zoom button { width: 30px; height: 30px; background: var(--paper); border: 1px solid var(--contour-dark); font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; }
+.zoom button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.compass { position: absolute; top: 34px; right: 16px; pointer-events: none; }
+.scale { position: absolute; left: 16px; bottom: 34px; font-family: var(--font-mono); font-size: 9px; color: var(--ink-soft); pointer-events: none; }
+.scale-bar { height: 5px; border: 1px solid var(--ink-soft); border-top: none; margin-top: 3px; }
+.scale-row { display: flex; justify-content: space-between; }
+.legend { position: absolute; bottom: 34px; right: 20px; background: var(--paper); border: 1px solid var(--contour-dark); padding: 12px 16px; font-family: var(--font-mono); font-size: 11px; }
+.legend-row { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); margin-bottom: 6px; }
+.legend-row:last-child { margin-bottom: 0; }
+.tooltip { position: absolute; pointer-events: none; background: var(--ink); color: var(--paper); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; padding: 5px 9px; white-space: nowrap; transform: translate(-50%, -150%); z-index: 20; }
 
-/* Video Section */
-.video-section {
-  margin-bottom: 60px;
-}
-.video-section h2 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin: 0 0 16px;
-}
-.video-wrapper {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  background: var(--paper-deep);
-  border: 1.5px solid var(--contour-dark);
-}
-.video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+.state-label { font-family: var(--font-display); font-style: italic; fill: var(--contour-dark); opacity: 0.55; font-size: 15px; letter-spacing: 0.25em; pointer-events: none; }
+.grat-label { font-family: var(--font-mono); font-size: 9px; fill: var(--contour-dark); opacity: 0.7; pointer-events: none; }
+.peak { cursor: pointer; }
+.peak-label { font-family: var(--font-mono); font-size: 7.5px; fill: var(--ink); pointer-events: none; paint-order: stroke; stroke: var(--paper); stroke-width: 2.5px; stroke-linejoin: round; display: none; }
+svg.labels .peak-label { display: block; }
+.peak .ring { display: none; }
+.peak.sel .ring { display: block; }
 
-/* Acknowledgements Box */
-.acknowledgements-box {
-  background: var(--paper-deep);
-  border: 1px solid var(--contour);
-  padding: 32px;
-  margin-bottom: 60px;
-}
-.acknowledgements-box h3 {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--accent);
-  margin: 0 0 12px;
-  font-weight: 700;
-}
-.acknowledgements-box p {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  margin: 0 0 16px;
-}
-.acknowledgements-box p:last-child {
-  margin-bottom: 0;
-  font-style: normal;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink);
-}
+/* Detail panel */
+.panel { background: var(--paper-deep); padding: 32px 28px; overflow-y: auto; position: relative; }
+.empty-card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding-top: 40px; }
+.empty-title { font-family: var(--font-display); font-size: 28px; font-weight: 400; margin: 0; letter-spacing: -0.02em; }
+.empty-body { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0; max-width: 320px; }
+.panel-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: transparent; border: 1px solid var(--contour); cursor: pointer; font-size: 18px; line-height: 1; color: var(--ink-soft); transition: all 0.15s; }
+.panel-close:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.panel-header { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px dashed var(--contour); }
+.panel-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.code-large { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: #a67614; line-height: 1; border: 2px solid var(--rabbitbrush); background: rgba(212, 155, 39, 0.12); padding: 6px 10px; }
+.code-large.other { color: #7a6d52; border-color: var(--sand); background: rgba(194, 178, 143, 0.18); }
+.code-large.unskied { color: var(--ink-soft); border-color: var(--ink-soft); background: transparent; }
+.panel-kind { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-soft); margin-bottom: 2px; }
+.panel-status { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; font-weight: 700; color: #9c6e11; }
+.panel-status.other { color: #73664b; } .panel-status.unskied { color: var(--ink-soft); }
+.panel-name { font-family: var(--font-display); font-size: 36px; font-weight: 400; margin: 0 0 6px; letter-spacing: -0.02em; line-height: 1.05; }
+.panel-coords { font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--ink-soft); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--contour); border: 1px solid var(--contour); margin-bottom: 24px; }
+.stat { background: var(--paper); padding: 14px 16px; }
+.stat.wide { grid-column: 1 / -1; }
+.stat-label, .section-label { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-soft); margin-bottom: 4px; }
+.stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+.stat-unit { font-size: 14px; font-weight: 400; color: var(--ink-soft); margin-left: 3px; }
+.stat-text { font-family: var(--font-display); font-size: 17px; font-weight: 500; line-height: 1.3; }
+.section-label { font-size: 10px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--contour); }
+.photo { display: block; background: var(--paper); border: 1px solid var(--contour-dark); padding: 6px; margin: 0 0 4px; }
+.photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: saturate(0.9) contrast(1.02); }
+.cta { width: 100%; background: var(--ink); color: var(--paper); padding: 16px 20px; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; transition: all 0.15s; text-decoration: none; }
+.cta:hover { background: var(--accent); }
+.planned-text { font-family: var(--font-display); font-style: italic; font-size: 16px; line-height: 1.5; color: var(--ink-soft); margin: 0; }
 
-@media (max-width: 768px) {
-  .hero-bg { justify-content: center; padding: 40px 20px; min-height: 360px; }
-  .content-container { padding: 40px 20px; }
-  .acknowledgements-box { padding: 24px 20px; }
+/* Ledger */
+.ledger { overflow-y: auto; height: 100%; }
+.ledger-inner { max-width: 1200px; margin: 0 auto; padding: 48px 64px 80px; }
+.ledger-head { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1.5px solid var(--contour-dark); }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 14px; font-weight: 700; }
+.ledger-head h1 { font-family: var(--font-display); font-size: 56px; font-weight: 400; letter-spacing: -0.03em; margin: 0 0 20px; line-height: 1; }
+.totals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--contour); border: 1px solid var(--contour); }
+.total { background: var(--paper); padding: 16px 20px; }
+.total-num { font-family: var(--font-display); font-size: 44px; font-weight: 500; letter-spacing: -0.03em; line-height: 1; }
+.total-num.acc { color: #b58018; }
+.total-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); margin-top: 6px; }
+.filters { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab.boxed { border-color: var(--contour); }
+table { width: 100%; border-collapse: collapse; }
+th { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-soft); text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--contour-dark); font-weight: 500; white-space: nowrap; }
+th[data-sort] { cursor: pointer; }
+th[data-sort]:hover { color: var(--ink); }
+th .arr { color: var(--accent); margin-left: 4px; }
+td { padding: 12px; border-bottom: 1px dashed var(--contour); font-size: 14px; vertical-align: baseline; }
+tbody tr { cursor: pointer; transition: background 0.12s; }
+tbody tr:hover { background: var(--paper-deep); }
+td.name { font-family: var(--font-display); font-size: 19px; letter-spacing: -0.01em; white-space: nowrap; }
+td.mono { font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+td.num { font-family: var(--font-mono); font-size: 13px; text-align: right; white-space: nowrap; }
+th.num { text-align: right; }
+td.lines { color: var(--ink-soft); }
+td a { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); text-decoration: none; white-space: nowrap; }
+td a:hover { text-decoration: underline; }
+.muted { color: var(--contour); }
+
+@media (max-width: 1100px) {
+  .wm-name, .counter-label { display: none; }
+  .hdr { padding: 14px 20px; } .subbar { padding: 8px 20px; }
+  .map-view { grid-template-columns: 1fr 340px; }
+  .panel { padding: 24px 20px; }
+  .ledger-inner { padding: 32px 20px 60px; }
+}
+@media (max-width: 820px) {
+  .app { height: auto; min-height: 100vh; }
+  .map-view { display: block; height: auto; }
+  .map-wrap { height: 68vh; border-right: none; border-bottom: 1.5px solid var(--contour-dark); }
+  .ledger { height: auto; }
+  .ledger-head h1 { font-size: 40px; }
+  .totals { grid-template-columns: 1fr; }
+  .col-lines, .col-prom { display: none; }
+  .subbar-title em { display: none; }
+  .legend { right: 10px; bottom: 10px; padding: 8px 10px; font-size: 10px; }
+  .scale { bottom: 12px; } .corners .c-bl { display: none; }
+  .hdr { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hdr-left { justify-content: space-between; }
+  .nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  html, body { overflow-x: hidden; } .app, .hdr, main { max-width: 100vw; }
+  .map-view > * { min-width: 0; }
+  .nav a { padding: 7px 10px; font-size: 11px; }
 }
 </style>
 </head>
@@ -182,56 +187,262 @@ a { color: inherit; text-decoration: none; }
       <a class="wordmark" href="index.html">
         <span class="wm-mono">STB</span><span class="wm-divider">·</span><span class="wm-name">Skiing the Basin</span>
       </a>
+      <div class="counter">
+        <span class="counter-num" id="cNum"></span><span class="counter-div">/</span><span class="counter-total" id="cTot"></span>
+        <span class="counter-label">skied project peaks</span>
+      </div>
     </div>
     <nav class="nav">
-      <a class="active" href="index.html" aria-current="page">The Project</a>
-      <a href="peaks.html">The Peaks</a>
+      <a href="index.html">The Project</a>
+      <a class="active" href="peaks.html" aria-current="page">The Peaks</a>
       <a href="people.html">The People</a>
       <a href="supporters.html">Supporters</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
 
-  <!-- Hero Banner with Photo and Logo Overlay -->
-  <div class="hero-bg">
-    <div class="hero-logo-wrap">
-      <img src="images/Skiing_the_Basin_Logo.png" alt="Skiing the Basin Logo" onerror="this.style.display='none'">
+  <div class="subbar">
+    <div class="subbar-title">The Peaks<em id="subCount"></em></div>
+    <div class="tabs">
+      <button class="tab active" data-view="map">Map</button>
+      <button class="tab" data-view="ledger">Ledger</button>
     </div>
   </div>
 
-  <main class="content-container">
-    <!-- Project Text Content -->
-    <div class="section-block">
-      <h2>The Idea</h2>
-      <p>To ski every peak in Nevada, USA with over 3,000‘ of prominence (64 total).</p>
-    </div>
-
-    <div class="section-block">
-      <h2>Why?</h2>
-      <p>To lure myself into skiing Nevada’s lesser-visited places. With its rich cultural history, immense vastness, and vibrant ecology, Nevada offers several lifetimes of ski adventures. Get out and experience it for yourself!</p>
-    </div>
-
-    <div class="section-block">
-      <h2>What is Prominence?</h2>
-      <p>Prominence is a method of quantifying a peak’s relief. In large part due to it’s unique basin & range geology, Nevada has more highly prominent peaks than any other state in the Lower 48.</p>
-    </div>
-
-    <!-- Latest Video Section -->
-    <div class="video-section">
-      <h2>Latest Video</h2>
-      <div class="video-wrapper">
-        <!-- Replace the src attribute below with your YouTube embed link when ready -->
-        <iframe src="https://youtu.be/TYuOApqakJY?si=xge9jUCchUfwKW8m" title="Latest Video" allowfullscreen></iframe>
+  <main>
+    <div class="map-view" id="viewMap">
+      <div class="map-wrap" id="mapWrap">
+        <svg id="map" preserveAspectRatio="xMidYMid meet" aria-label="Map of Nevada with project peaks"></svg>
+        <div class="corners">
+          <div class="c-tr">N 42°00' · W 114°02'</div>
+          <div class="c-bl">N 35°00' · W 120°00'</div>
+        </div>
+        <div class="zoom">
+          <button id="zIn" aria-label="Zoom in">+</button>
+          <button id="zOut" aria-label="Zoom out">−</button>
+          <button id="zReset" aria-label="Reset view">⌂</button>
+        </div>
+        <div class="compass">
+          <svg width="30" height="38" viewBox="0 0 30 38"><text x="15" y="7" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#48524c">N</text><circle cx="15" cy="23" r="12" fill="none" stroke="#5c6b61" stroke-width="0.8"/><line x1="15" y1="11" x2="15" y2="35" stroke="#5c6b61" stroke-width="0.5"/><line x1="3" y1="23" x2="27" y2="23" stroke="#5c6b61" stroke-width="0.5"/><path d="M15 12 L18 23 L12 23 Z" fill="#8c3b32"/></svg>
+        </div>
+        <div class="scale"><div class="scale-row"><span>0</span><span>50 mi</span></div><div class="scale-bar" id="scaleBar"></div></div>
+        <div class="legend">
+          <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#d49b27" stroke="#29302c" stroke-width="1"/><circle cy="1.5" r="1.6" fill="#e3e7e2"/></svg><span>Skied Project Peaks</span></div>
+          <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#c2b28f" stroke="#29302c" stroke-width="1"/></svg><span>Other Skied Peaks/Zones</span></div>
+          <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#e3e7e2" stroke="#48524c" stroke-width="1.3"/></svg><span>Unskied Project Peaks</span></div>
+        </div>
+        <div class="tooltip" id="tip" hidden></div>
       </div>
+      <aside class="panel" id="panel"></aside>
     </div>
 
-    <!-- Acknowledgements Footer Box -->
-    <div class="acknowledgements-box">
-      <h3>Acknowledgements</h3>
-      <p>This entire project takes place on Wašišiw Ɂítdeh (Washoe), Newe (Western Shoshone), Shoshone-Bannock, Southern Paiute, Numu (Northern Paiute), and Goshute land. Please do your homework, access to tribal lands may be restricted or require permits/fees.</p>
-      <p>Go ski, have fun, be respectful.</p>
+    <div class="ledger" id="viewLedger" hidden>
+      <div class="ledger-inner">
+        <div class="ledger-head">
+          <div class="eyebrow">The Ledger</div>
+          <h1>Every peak, in one list</h1>
+          <div class="totals">
+            <div class="total"><div class="total-num acc" id="tSkied"></div><div class="total-label">Skied Project Peaks</div></div>
+            <div class="total"><div class="total-num" id="tLeft"></div><div class="total-label">Unskied Project Peaks</div></div>
+            <div class="total"><div class="total-num" id="tOther"></div><div class="total-label">Other Skied Peaks/Zones</div></div>
+          </div>
+        </div>
+        <div class="filters" id="filters">
+          <button class="tab boxed active" data-f="all">All</button>
+          <button class="tab boxed" data-f="s">Skied Project Peaks</button>
+          <button class="tab boxed" data-f="o">Other Skied Peaks/Zones</button>
+          <button class="tab boxed" data-f="u">Unskied Project Peaks</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th></th>
+            <th data-sort="name">Peak</th>
+            <th data-sort="prom" class="num col-prom">Prominence</th>
+            <th data-sort="date">Date skied</th>
+            <th class="col-lines">Line(s) skied</th>
+            <th>Report</th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
     </div>
   </main>
 </div>
-</body>
-</html>
+
+<script>
+/* Updated UP path to point to your new clean map_photos folder */
+const UP = 'images/map_photos/';
+const TR = 'https://threebrothers.exposure.co/';
+const RAW = [
+["Matterhorn","s",4689,"April 7, 2025","N Face","tsawhawbitts","matterhorn.jpg",-115.3746,41.8109],
+["South Pequop","s",3099,"March 9, 2025","NW Face","coyotes-y-cumbres","south-pequop.jpg",-114.5896,40.9242],
+["Goshute Peak","s",3712,"Feb. 17, 2025","E Trees, NE Bowl, NW Burn","","goshute-peak.jpg",-114.2954,40.4996],
+["Spruce Mt.","s",3930,"April 7, 2024","W Face","beneath-the-bristlecones","spruce-mt.jpg",-114.8218,40.5524],
+["Cherry Creek","s",3734,"April 6, 2024","NE Gully, E Face","beneath-the-bristlecones","cherry-creek.jpg",-114.8956,39.9659],
+["Granite Peak","s",3460,"March 17, 2024","NE Face, Banjo Couloir","above-the-black-rock","granite-peak.jpg",-119.4332,40.7909],
+["Kumiva Peak","s",3660,"March 16, 2024","N Face, NE Gully","above-the-black-rock","kumiva-peak.jpg",-119.2631,40.4061],
+["Piper Peak","s",4083,"Feb. 25, 2024","N Bowl, S Plateau","surreal","piper-peak.jpg",-117.9092,37.704],
+["Grapevine Peak","s",4562,"Feb. 24, 2024","NW Face, N Face","surreal","grapevine-peak.jpg",-117.15,36.9653],
+["Mount Moriah","s",4927,"May 27, 2023","N Face","the-high-country","mount-moriah.jpg",-114.1989,39.273],
+["Roberts Creek Mt.","s",3594,"May 8, 2023","N Face","","roberts-creek-mt.jpg",-116.3105,39.8699],
+["Currant Mt.","s",4584,"April 15, 2023","E Face","the-spice-of-life","currant-mt.jpg",-115.4246,38.9097],
+["Bloody Run Peak","s",3015,"April 8, 2023","NE Face","midseason-moments","bloody-run-peak.jpg",-117.7669,41.1714],
+["Pilot Peak","s",5731,"March 6, 2023","NE Face, E Couloir","midseason-moments","pilot-peak.jpg",-114.0773,41.021],
+["Tohakum Peak","s",3509,"Feb. 25, 2023","N Face, E Canyon","midseason-moments","tohakum-peak.jpg",-119.455,40.1792],
+["Troy Peak","s",4794,"Feb. 19, 2023","S Ridge, W Face","the-vastlands","troy-peak.jpg",-115.5019,38.3194],
+["Pilot Peak","s",4794,"Feb. 18, 2023","SE Gully","the-vastlands","pilot-peak-2.jpg",-117.9741,38.3429],
+["Worthington Peak","s",3108,"Jan. 22, 2023","S Shoulder, E Face","right-peak-at-the-right-time","worthington-peak.jpg",-115.6116,37.9175],
+["Fox (Job) Peak","s",3905,"Jan. 15, 2023","NW Face","a-miss-and-a-hit","fox-job-peak.jpg",-118.2356,39.5829],
+["Diamond Peak","s",3604,"March 13, 2022","NE Tube","","diamond-peak.jpg",-115.8186,39.5848],
+["Mt. Hamilton","s",3005,"March 12, 2022","E Gully, N Face","","mt-hamilton.jpg",-115.5413,39.2322],
+["Eugene Mt.","s",3005,"March 5, 2022","N Gully, E Gully","","eugene-mt.jpg",-118.1852,40.8358],
+["Virginia Peak","s",3658,"Feb. 27, 2022","NE Face","close-to-home","virginia-peak.jpg",-119.4616,39.7554],
+["Ward Mt.","s",3676,"Jan. 22, 2022","N Gully","ward","ward-mt.jpg",-114.9207,39.1001],
+["McAfee Peak","s",4168,"May 3, 2021","SE Face","","mcafee-peak.jpg",-115.9735,41.5215],
+["Ruby Dome","s",4793,"April 12, 2021","S Face","","ruby-dome.jpg",-115.4757,40.6215],
+["Mt. Lewis","s",4280,"Feb. 21, 2021","E Face, S Face, W Ridge","parting-skies","mt-lewis.jpg",-116.8617,40.4036],
+["Mt. Moses","s",3529,"Feb. 20, 2021","NW Bowl, W Face","parting-skies","mt-moses.jpg",-117.4155,40.1471],
+["Orevada View","s",3548,"Feb. 8, 2021","S Faces","airplane-mode","orevada-view.jpg",-118.223,41.9792],
+["Duffer Peak","s",4139,"Feb. 7, 2021","N Face","airplane-mode","duffer-peak.jpg",-118.7305,41.6614],
+["Jackson HP","s",4863,"Feb. 6, 2021","SW Bowl","airplane-mode","jackson-hp.jpg",-118.4163,41.3033],
+["Mt. Tobin","s",4831,"Jan. 31, 2021","E Face","mt-tobin","mt-tobin.jpg",-117.5265,40.3758],
+["Mt. Callaghan","s",3027,"Jan. 24, 2021","W Face, W Knob","catching-callaghan","mt-callaghan.jpg",-116.9505,39.7092],
+["North Schell Peak","s",5413,"April 26, 2020","N Face","to-schell-and-back","north-schell-peak.png",-114.5999,39.4132],
+["Arc Dome","s",5213,"April 19, 2020","N Face","finding-space","arc-dome.png",-117.353,38.8326],
+["Mt. Augusta","s",4386,"April 11, 2020","E Face, N Gully","finding-space","mt-augusta.png",-117.9195,39.5399],
+["Mt. Siegel","s",3471,"April 5, 2020","E Face","finding-space","mt-siegel.png",-119.5022,38.8894],
+["Mt. Rose","s",3630,"March 21, 2020","N Bowl","mt-rose-ultimate-linkup","mt-rose.png",-119.9179,39.3437],
+["Sonoma Peak","s",3846,"Feb. 29, 2020","N Face, NW Couloir","the-basin-provides","sonoma-peak.png",-117.607,40.8607],
+["Adam Peak","s",3568,"Feb. 22, 2020","E Face","east-on-80","adam-peak.png",-117.3052,41.1606],
+["Pearl Peak","s",3628,"Feb. 17, 2020","Necklace Couloir, The Scimitar","east-on-80","pearl-peak.png",-115.5407,40.2349],
+["Hole-in-the-Mountain","s",4849,"Feb. 15, 2020","E Ramp","east-on-80","hole-in-the-mountain.png",-115.1223,40.9508],
+["Mt. Grafton","s",3257,"May 25, 2019","N Face","","mt-grafton.png",-114.7422,38.6922],
+["Desatoya Twins","s",3545,"May 19, 2019","N Face, N Bowl","desatoya","desatoya-twins.png",-117.7589,39.3647],
+["Star Peak","s",5396,"May 11, 2019","N Face","star-peak-ii","star-peak.png",-118.1709,40.5225],
+["Wheeler Peak","s",7568,"April 20, 2019","N Ramp, Rock Glacier Couloir","wheeler-peak","wheeler-peak.png",-114.3141,38.9858],
+["Tule Peak","s",3426,"March 14, 2019","S Face","","tule-peak.png",-119.7439,39.9762],
+["Charleston Peak","u",null,"","","","",-115.69556,36.27168],
+["Mount Jefferson","s",5871,"April 14, 2026","NE Face","alta-toquima-traverse","mount-jefferson.jpg",-116.92663,38.75181],
+["Hayford Peak","u",null,"","","","",-115.20092,36.65733],
+["Mormon Peak","u",null,"","","","",-114.5005,36.9739],
+["Mt. Grant","u",null,"","","","",-118.79105,38.5683],
+["Lone Mountain","u",null,"","","","",-117.4944,38.02419],
+["Table Mountain","u",null,"","","","",-116.58846,38.81149],
+["North Peak","u",null,"","","","",-117.13271,40.67478],
+["Seaman Range HP","u",null,"","","","",-115.10149,37.98071],
+["Jumbo Peak","u",null,"","","","",-114.18099,36.2065],
+["Highland Peak","u",null,"","","","",-114.57891,37.89382],
+["Virgin Peak","u",null,"","","","",-114.11229,36.60271],
+["Cain Mountain","u",null,"","","","",-117.54337,40.0239],
+["Mt. Tenabo","u",null,"","","","",-116.58305,40.16287],
+["Kawich Peak","u",null,"","","","",-116.46194,37.96152],
+["Potosi Mountain","u",null,"","","","",-115.50154,35.96543],
+["Big Creek Peak","o",1301,"March 15, 2025","NE Face","","big-creek-peak.jpg",-117.1457,39.30335],
+["Thunder Mt.","o",356,"February 23, 2025","N Face","buckskin","thunder-mt.jpg",-118.1605,40.55666],
+["Buckskin Mt.","o",1364,"February 22, 2025","W Face, S Face","buckskin","buckskin-mt.jpg",-117.5528,41.78923],
+["Pyramid Peak","o",764,"May 28, 2023","N Face","the-high-country","pyramid-peak.jpg",-114.295,38.9484],
+["Shingle Mt.","o",2883,"January 21, 2023","N Face, NW Couloir","right-peak-at-the-right-time","shingle-mt.jpg",-114.9279,38.50808],
+["Bald Mt.","o",1151,"January 14, 2023","N Face","a-miss-and-a-hit","bald-mt.jpg",-117.7562,39.27984],
+["Jacks Peak","o",488,"May 3, 2021","NW Face","","jacks-peak.jpg",-116.0065,41.48633],
+["Doso Doyabi","o",4352,"January 23, 2022","N Couloir","ward","doso-doyabi.jpg",-120.2008,41.28342],
+["Eagle Peak, CA","o",4352,"April 3, 2021","N Face/Gully","","eagle-peak-ca.jpg",-120.2008,41.28342],
+["Porter Peak","o",2662,"February 28, 2021","W Face, SE Face","coyotes-y-cumbres","porter-peak.jpg",-116.1366,41.6806],
+["East Duffer Peak","o",363,"February 7, 2021","N Couloir","airplane-mode","east-duffer-peak.jpg",-118.721,41.6607],
+["Boundary Peak","o",253,"May 2, 2020","N Face, E Bowl","spring-ski-distancing","boundary-peak.jpg",-118.3509,37.84605],
+["Montgomery Peak, CA","o",1241,"May 2, 2020","Southeast Face","spring-ski-distancing","montgomery-peak-ca.png",-118.3566,37.83833],
+["Taft Peak","o",425,"April 25, 2020","North Face","","taft-peak.jpg",-114.5905,39.35063],
+["Mt. Patterson, CA","o",4153,"April 19, 2020","North Face","the-sweetwaters?source=share-threebrothers","mt-patterson-ca.jpg",-119.3053,38.43638],
+["King Lear Peak","o",2903,"March 1, 2020","East Ramp, W Canyon, NE Bowl","the-basin-provides","king-lear-peak.png",-118.5548,41.20226],
+["Santa Rosa Peak","o",2161,"February 9, 2020","S Face","santa-rosas","santa-rosa-peak.jpg",-117.6714,41.568],
+["Bunker Hill","o",2813,"March 7, 2020","W Spires, NE Face, S Face","midseason-moments","bunker-hill.jpg",-117.1258,39.25253],
+["Dogskin Ridge","o",2057,"March 7, 2020","E Gully","","dogskin-ridge.jpg",-119.7762,39.88494],
+["N. Shoshone Peak","o",2853,"March 23, 2019","NW Bowl","","n-shoshone-peak.png",-117.4799,39.1503],
+["Copper Mountain","o",1470,"March 29, 2026","E Face, N Bowls","copper","copper-mountain.jpg",-115.52075,41.77088]
+];
+const PEAKS = RAW.map((r, i) => ({ id: i, name: r[0], st: r[1], prom: r[2], date: r[3], lines: r[4],
+  report: r[5] ? TR + r[5] : '', photo: r[6] ? UP + r[6] : '', lon: r[7], lat: r[8],
+  ts: r[3] ? Date.parse(r[3].replace('.', '')) : 0 }));
+const KIND = { s: 'Skied Project Peak', o: 'Other Skied Peak/Zone', u: 'Unskied Project Peak' };
+const STATUS = { s: 'SKIED', o: 'SKIED', u: 'ON THE LIST' };
+const CLS = { s: 'skied', o: 'other', u: 'unskied' };
+const count = st => PEAKS.filter(p => p.st === st).length;
+const nS = count('s'), nU = count('u'), nO = count('o');
+
+document.getElementById('cNum').textContent = nS;
+document.getElementById('cTot').textContent = nS + nU;
+document.getElementById('subCount').textContent = nS + ' completed, ' + nU + ' remaining';
+document.getElementById('tSkied').textContent = nS;
+document.getElementById('tLeft').textContent = nU;
+document.getElementById('tOther').textContent = nO;
+
+/* ---------- Map ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const S = 110, LON0 = -120.9, LAT0 = 42.45, KX = Math.cos(39 * Math.PI / 180);
+const px = lon => (lon - LON0) * KX * S, py = lat => (LAT0 - lat) * S;
+const BASE = { x: 0, y: 0, w: px(-113.3), h: py(34.6) };
+let vb = { ...BASE };
+const svg = document.getElementById('map');
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; };
+
+const NV = [[-120.0,42.0],[-117.03,42.0],[-114.04,42.0],[-114.05,37.0],[-114.05,36.19],[-114.14,36.03],[-114.24,36.02],[-114.37,36.14],[-114.57,36.15],[-114.74,36.10],[-114.74,36.0],[-114.70,35.85],[-114.68,35.69],[-114.65,35.55],[-114.57,35.14],[-114.63,35.0],[-120.0,39.0]];
+const nvPath = 'M' + NV.map(p => px(p[0]).toFixed(1) + ',' + py(p[1]).toFixed(1)).join('L') + 'Z';
+
+const defs = el('defs', {});
+el('path', { d: nvPath }, el('clipPath', { id: 'nvClip' }, defs));
+
+const filt = el('filter', { id: 'nvRelief', x: '0%', y: '0%', width: '100%', height: '100%' }, defs);
+el('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.025 0.09', numOctaves: '4', seed: '14', result: 'noise' }, filt);
+const light = el('feDiffuseLighting', { in: 'noise', 'lighting-color': '#ffffff', surfaceScale: '2.4', result: 'light' }, filt);
+el('feDistantLight', { azimuth: '315', elevation: '42' }, light);
+el('feComponentTransfer', { in: 'light', result: 'contrast' }, filt).innerHTML =
+  '<feFuncR type="linear" slope="1.35" intercept="-0.18"/><feFuncG type="linear" slope="1.35" intercept="-0.18"/><feFuncB type="linear" slope="1.35" intercept="-0.18"/>';
+el('feColorMatrix', { type: 'saturate', values: '0', in: 'contrast', result: 'gray' }, filt);
+
+const grat = el('g', {});
+for (let lon = -120; lon <= -114; lon++) {
+  el('line', { x1: px(lon), y1: -2000, x2: px(lon), y2: 3000, stroke: '#95a399', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
+  el('text', { x: px(lon) + 3, y: py(34.78), class: 'grat-label' }, grat).textContent = Math.abs(lon) + '°W';
+}
+for (let lat = 35; lat <= 42; lat++) {
+  el('line', { x1: -2000, y1: py(lat), x2: 3000, y2: py(lat), stroke: '#95a399', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
+  el('text', { x: px(-113.62), y: py(lat) - 3, class: 'grat-label' }, grat).textContent = lat + '°N';
+}
+
+el('path', { d: nvPath, fill: '#d4dad3' });
+const reliefGroup = el('g', { 'clip-path': 'url(#nvClip)' });
+el('rect', {
+  x: px(-120.2), y: py(42.2),
+  width: px(-113.8) - px(-120.2), height: py(34.8) - py(42.2),
+  filter: 'url(#nvRelief)',
+  opacity: '0.28',
+  style: 'mix-blend-mode: multiply; pointer-events: none;'
+}, reliefGroup);
+
+const lakes = el('g', { 'clip-path': 'url(#nvClip)', fill: '#9ab0b8', stroke: '#5c6b61', 'stroke-width': 0.6, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
+const LAKE_SHAPES = [
+  [[-120.16,39.24],[-120.06,39.25],[-120.00,39.24],[-119.94,39.22],[-119.93,39.15],[-119.95,39.06],[-119.95,38.96],[-120.01,38.93],[-120.08,38.94],[-120.14,38.99],[-120.16,39.08],[-120.17,39.17]],
+  [[-119.65,40.22],[-119.57,40.23],[-119.50,40.17],[-119.47,40.06],[-119.46,39.96],[-119.50,39.87],[-119.57,39.86],[-119.62,39.94],[-119.65,40.05],[-119.67,40.15]],
+  [[-118.77,38.82],[-118.71,38.82],[-118.68,38.74],[-118.67,38.64],[-118.70,38.57],[-118.75,38.58],[-118.77,38.66],[-118.78,38.75]],
+  [[-114.82,36.14],[-114.74,36.16],[-114.66,36.14],[-114.56,36.16],[-114.45,36.22],[-114.37,36.32],[-114.35,36.44],[-114.39,36.45],[-114.43,36.33],[-114.48,36.23],[-114.42,36.17],[-114.30,36.14],[-114.15,36.08],[-114.08,36.02],[-114.16,36.00],[-114.28,36.03],[-114.42,36.11],[-114.58,36.11],[-114.73,36.08],[-114.76,36.01],[-114.81,36.06]]
+];
+LAKE_SHAPES.forEach(poly => {
+  const d = 'M' + poly.map(pt => px(pt[0]).toFixed(1) + ',' + py(pt[1]).toFixed(1)).join('L') + 'Z';
+  el('path', { d }, lakes);
+});
+
+el('path', { d: nvPath, fill: 'none', stroke: '#29302c', 'stroke-width': 1.4, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
+
+[['OREGON',-118.6,42.25],['IDAHO',-115.6,42.25],['UTAH',-113.72,39.6],['ARIZONA',-113.8,35.6],['CALIFORNIA',-119.2,37.2]].forEach(s => {
+  const t = el('text', { x: px(s[1]), y: py(s[2]), class: 'state-label', 'text-anchor': 'middle' });
+  if (s[0] === 'CALIFORNIA') t.setAttribute('transform', `rotate(43 ${px(s[1])} ${py(s[2])})`);
+  if (s[0] === 'UTAH') t.setAttribute('transform', `rotate(90 ${px(s[1])} ${py(s[2])})`);
+  t.textContent = s[0];
+});
+const nvLabel = el('text', { x: px(-116.6), y: py(37.35), class: 'state-label', 'text-anchor': 'middle' });
+nvLabel.textContent = 'NEVADA'; nvLabel.style.fontSize = '22px'; nvLabel.style.opacity = 0.25;
+
+const layer = el('g', {});
+const order = { u: 0, o: 1, s: 2 };
+const markers = {};
+[...PEAKS].sort((a, b) => order[a.st] - order[b.st] || b.lat - a.lat).forEach(p => {
+  const g = el('
