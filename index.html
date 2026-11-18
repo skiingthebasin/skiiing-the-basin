@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skiing the Basin</title>
+<title>The Project · Skiing the Basin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,8 @@
   --font-mono: "JetBrains Mono", "Courier New", monospace;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; min-height: 100vh; font-family: var(--font-body); color: var(--ink); background: var(--paper); }
+html, body { margin: 0; padding: 0; height: 100%; font-family: var(--font-body); color: var(--ink); background: var(--paper); }
+a { color: inherit; text-decoration: none; }
 .app { min-height: 100vh; display: flex; flex-direction: column;
   background: radial-gradient(ellipse at top left, rgba(0,0,0,0.02), transparent 60%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.03), transparent 60%), var(--paper); }
 .app::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
@@ -31,26 +32,104 @@ html, body { margin: 0; padding: 0; min-height: 100vh; font-family: var(--font-b
 .wm-name { font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--ink-soft); letter-spacing: -0.01em; white-space: nowrap; }
 
 .nav { display: flex; gap: 4px; flex-wrap: wrap; }
-.nav a { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; background: transparent; border: 1px solid transparent; padding: 8px 14px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; white-space: nowrap; text-decoration: none; }
+.nav a { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; background: transparent; border: 1px solid transparent; padding: 8px 14px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
 .nav a:hover { color: var(--ink); border-color: var(--contour); }
 .nav a.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
-/* Hero Section */
-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 64px 24px; position: relative; z-index: 2; }
-.hero { max-width: 720px; width: 100%; background: var(--paper-deep); border: 1.5px solid var(--contour-dark); padding: 48px; box-shadow: 0 12px 32px rgba(43,40,32,0.06); }
-.eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 16px; font-weight: 700; }
-h1 { font-family: var(--font-display); font-size: 48px; font-weight: 400; letter-spacing: -0.03em; margin: 0 0 20px; line-height: 1.08; }
-p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 32px; }
-.cta-group { display: flex; gap: 12px; flex-wrap: wrap; }
-.btn { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; padding: 14px 24px; text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; }
-.btn-primary { background: var(--ink); color: var(--paper); border: 1px solid var(--ink); }
-.btn-primary:hover { background: var(--accent); border-color: var(--accent); }
-.btn-secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--contour-dark); }
-.btn-secondary:hover { background: var(--contour); color: var(--paper); }
+/* Hero Section with Background Photo & Logo Overlay */
+main { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 2; }
+.hero-bg {
+  position: relative;
+  flex: 1;
+  min-height: 55vh;
+  background-image: url('images/jarbidge-18.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 64px;
+  border-bottom: 1.5px solid var(--contour-dark);
+}
+/* Dark overlay tint to make text and logo crisp */
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(43,40,32,0.85) 0%, rgba(43,40,32,0.65) 100%);
+  z-index: 1;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  color: var(--paper);
+}
+.eyebrow { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent-soft); margin-bottom: 16px; font-weight: 700; }
+h1 { font-family: var(--font-display); font-size: 52px; font-weight: 400; letter-spacing: -0.03em; margin: 0 0 20px; line-height: 1.05; color: var(--paper); }
+.hero-content p { font-size: 16px; line-height: 1.6; color: var(--paper-deep); margin: 0 0 32px; opacity: 0.9; }
+.btn { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.15px; padding: 14px 24px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: var(--paper); color: var(--ink); border: 1px solid var(--paper); transition: all 0.15s; font-weight: 600; }
+.btn:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
 
-@media (max-width: 768px) {
-  .hero { padding: 32px 24px; }
-  h1 { font-size: 36px; }
+/* Logo Overlay on the Right */
+.hero-logo-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.hero-logo-wrap img {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+/* Peaks Prominence Strip (Increasing Prominence Layout) */
+.prominence-strip {
+  background: var(--paper-deep);
+  padding: 40px 32px;
+  border-top: 1px solid var(--contour);
+}
+.strip-header {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.strip-title { font-family: var(--font-display); font-size: 24px; letter-spacing: -0.02em; margin: 0; }
+.strip-subtitle { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); }
+.peaks-row {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scrollbar-width: thin;
+}
+.peak-card {
+  min-width: 160px;
+  background: var(--paper);
+  border: 1px solid var(--contour-dark);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.peak-card-name { font-family: var(--font-display); font-size: 15px; font-weight: 500; }
+.peak-card-prom { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--accent); }
+.peak-card-status { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); }
+
+@media (max-width: 900px) {
+  .hero-bg { flex-direction: column; align-items: flex-start; gap: 40px; padding: 40px 20px; }
+  .hero-logo-wrap { align-self: center; }
+  h1 { font-size: 38px; }
   .hdr { padding: 14px 20px; }
 }
 </style>
@@ -66,19 +145,65 @@ p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 32px;
     <nav class="nav">
       <a class="active" href="index.html" aria-current="page">The Project</a>
       <a href="peaks.html">The Peaks</a>
+      <a href="people.html">The People</a>
+      <a href="supporters.html">Supporters</a>
+      <a href="contact.html">Contact</a>
     </nav>
   </header>
 
   <main>
-    <div class="hero">
-      <div class="eyebrow">Backcountry Ski Project</div>
-      <h1>Skiing the Great Basin</h1>
-      <p>Exploring, mapping, and skiing prominent mountain ranges across Nevada. A custom-built log of peaks climbed, lines skied, and high-desert winter travels.</p>
-      <div class="cta-group">
-        <a class="btn btn-primary" href="peaks.html">Explore the Peaks Map →</a>
+    <div class="hero-bg">
+      <div class="hero-content">
+        <div class="eyebrow">The Project</div>
+        <h1>Skiing the Great Basin</h1>
+        <p>Exploring, mapping, and skiing prominent mountain ranges across Nevada. A custom backcountry log documenting every peak, line, and high-desert winter journey.</p>
+        <a class="btn" href="peaks.html">Explore Interactive Map →</a>
+      </div>
+      <div class="hero-logo-wrap">
+        <img src="images/Skiing_the_Basin_Logo.png" alt="Skiing the Basin Logo" onerror="this.style.display='none'">
+      </div>
+    </div>
+
+    <!-- Increasing Prominence Peaks Strip -->
+    <div class="prominence-strip">
+      <div class="strip-header">
+        <h2 class="strip-title">The Peaks Lineup</h2>
+        <span class="strip-subtitle">Ordered by increasing prominence</span>
+      </div>
+      <div class="peaks-row" id="peaksRow">
+        <!-- Dynamically injected via JavaScript below -->
       </div>
     </div>
   </main>
 </div>
-</body>
-</html>
+
+<script>
+/* Shared raw peak data (matched with peaks.html) to populate the prominence strip */
+const RAW = [
+["Matterhorn","s",4689],["South Pequop","s",3099],["Goshute Peak","s",3712],["Spruce Mt.","s",3930],
+["Cherry Creek","s",3734],["Granite Peak","s",3460],["Kumiva Peak","s",3660],["Piper Peak","s",4083],
+["Grapevine Peak","s",4562],["Mount Moriah","s",4927],["Roberts Creek Mt.","s",3594],["Currant Mt.","s",4584],
+["Bloody Run Peak","s",3015],["Pilot Peak","s",5731],["Tohakum Peak","s",3509],["Troy Peak","s",4794],
+["Pilot Peak","s",4794],["Worthington Peak","s",3108],["Fox (Job) Peak","s",3905],["Diamond Peak","s",3604],
+["Mt. Hamilton","s",3005],["Eugene Mt.","s",3005],["Virginia Peak","s",3658],["Ward Mt.","s",3676],
+["McAfee Peak","s",4168],["Ruby Dome","s",4793],["Mt. Lewis","s",4280],["Mt. Moses","s",3529],
+["Orevada View","s",3548],["Duffer Peak","s",4139],["Jackson HP","s",4863],["Mt. Tobin","s",4831],
+["Mt. Callaghan","s",3027],["North Schell Peak","s",5413],["Arc Dome","s",5213],["Mt. Augusta","s",4386],
+["Mt. Siegel","s",3471],["Mt. Rose","s",3630],["Sonoma Peak","s",3846],["Adam Peak","s",3568],
+["Pearl Peak","s",3628],["Hole-in-the-Mountain","s",4849],["Mt. Grafton","s",3257],["Desatoya Twins","s",3545],
+["Star Peak","s",5396],["Wheeler Peak","s",7568],["Tule Peak","s",3426],["Mount Jefferson","s",5871],
+["Big Creek Peak","o",1301],["Thunder Mt.","o",356],["Buckskin Mt.","o",1364],["Pyramid Peak","o",764],
+["Shingle Mt.","o",2883],["Bald Mt.","o",1151],["Jacks Peak","o",488],["Doso Doyabi","o",4352],
+["Eagle Peak, CA","o",4352],["Porter Peak","o",2662],["East Duffer Peak","o",363],["Boundary Peak","o",253],
+["Montgomery Peak, CA","o",1241],["Taft Peak","o",425],["Mt. Patterson, CA","o",4153],["King Lear Peak","o",2903],
+["Santa Rosa Peak","o",2161],["Bunker Hill","o",2813],["Dogskin Ridge","o",2057],["N. Shoshone Peak","o",2853],
+["Copper Mountain","o",1470]
+].map(r => ({ name: r[0], st: r[1], prom: r[2] })).filter(p => p.prom !== null);
+
+/* Sort by increasing prominence */
+RAW.sort((a, b) => a.prom - b.prom);
+
+const row = document.getElementById('peaksRow');
+row.innerHTML = RAW.map(p => `
+  <div class="peak-card">
+    <div class="
