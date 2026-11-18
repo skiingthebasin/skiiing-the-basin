@@ -367,9 +367,32 @@ const RAW = [
 ["Pt 9533","Independence Mountains","o",,"January 21, 2025","N Bowls","desert-headwaters","pt9533.webp",-115.95022,41.55766],
 ["Pt 7159","Wild Horse Range","o",,"January 20, 2025","N Gullies","desert-headwaters","pt7159.webp",41.69134, -115.86868]
 ];
-const PEAKS = RAW.map((r, i) => ({ id: i, name: r[0], st: r[1], prom: r[2], date: r[3], lines: r[4],
-  report: r[5] ? TR + r[5] : '', photo: r[6] ? UP + r[6] : '', lon: r[7], lat: r[8],
-  ts: r[3] ? Date.parse(r[3].replace('.', '')) : 0 }));
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+
+const PEAKS = RAW.map((r, i) => {
+  let lon = r[8];
+  let lat = r[9];
+  if (typeof lon === 'number' && typeof lat === 'number' && lon > 0 && lat < 0) {
+    [lon, lat] = [lat, lon];
+  }
+  const dateStr = r[4] || '';
+  return {
+    id: i,
+    name: r[0] || '',
+    range: r[1] || '',
+    st: r[2] || 'u',
+    prom: typeof r[3] === 'number' ? r[3] : null,
+    date: dateStr,
+    lines: r[5] || '',
+    report: r[6] ? TR + r[6] : '',
+    photo: r[7] ? UP + r[7] : '',
+    lon,
+    lat,
+    ts: dateStr ? Date.parse(dateStr.replace(/\./g, '')) || 0 : 0
+  };
+});
+
 const KIND = { s: 'Skied Project Peak', o: 'Other Skied Peak/Zone', u: 'Unskied Project Peak' };
 const STATUS = { s: 'SKIED', o: 'SKIED', u: 'ON THE LIST' };
 const CLS = { s: 'skied', o: 'other', u: 'unskied' };
@@ -383,227 +406,331 @@ document.getElementById('tSkied').textContent = nS;
 document.getElementById('tLeft').textContent = nU;
 document.getElementById('tOther').textContent = nO;
 
+/* ---------- View Tabs ---------- */
+const viewMap = document.getElementById('viewMap');
+const viewLedger = document.getElementById('viewLedger');
+document.querySelectorAll('.tabs .tab[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs .tab[data-view]').forEach(b => b.classList.toggle('active', b === btn));
+    const isMap = btn.dataset.view === 'map';
+    viewMap.hidden = !isMap;
+    viewLedger.hidden = isMap;
+    if (isMap) updateScaleBar();
+  });
+});
+
 /* ---------- Map ---------- */
 const NS = 'http://www.w3.org/2000/svg';
 const S = 110, LON0 = -120.9, LAT0 = 42.45, KX = Math.cos(39 * Math.PI / 180);
 const px = lon => (lon - LON0) * KX * S, py = lat => (LAT0 - lat) * S;
 const BASE = { x: 0, y: 0, w: px(-113.3), h: py(34.6) };
 let vb = { ...BASE };
+let selectedId = null;
+
 const svg = document.getElementById('map');
-const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; };
-
-const NV = [[-120.0,42.0],[-117.03,42.0],[-114.04,42.0],[-114.05,37.0],[-114.05,36.19],[-114.14,36.03],[-114.24,36.02],[-114.37,36.14],[-114.57,36.15],[-114.74,36.10],[-114.74,36.0],[-114.70,35.85],[-114.68,35.69],[-114.65,35.55],[-114.57,35.14],[-114.63,35.0],[-120.0,39.0]];
-const nvPath = 'M' + NV.map(p => px(p[0]).toFixed(1) + ',' + py(p[1]).toFixed(1)).join('L') + 'Z';
-
-const defs = el('defs', {});
-el('path', { d: nvPath }, el('clipPath', { id: 'nvClip' }, defs));
-
-const filt = el('filter', { id: 'nvRelief', x: '0%', y: '0%', width: '100%', height: '100%' }, defs);
-el('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.025 0.09', numOctaves: '4', seed: '14', result: 'noise' }, filt);
-const light = el('feDiffuseLighting', { in: 'noise', 'lighting-color': '#ffffff', surfaceScale: '2.4', result: 'light' }, filt);
-el('feDistantLight', { azimuth: '315', elevation: '42' }, light);
-const comp = el('feComponentTransfer', { in: 'light', result: 'contrast' }, filt);
-el('feFuncR', { type: 'linear', slope: '1.35', intercept: '-0.18' }, comp);
-el('feFuncG', { type: 'linear', slope: '1.35', intercept: '-0.18' }, comp);
-el('feFuncB', { type: 'linear', slope: '1.35', intercept: '-0.18' }, comp);
-el('feColorMatrix', { type: 'saturate', values: '0', in: 'contrast', result: 'gray' }, filt);
-
-const grat = el('g', {});
-for (let lon = -120; lon <= -114; lon++) {
-  el('line', { x1: px(lon), y1: -2000, x2: px(lon), y2: 3000, stroke: '#95a399', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
-  el('text', { x: px(lon) + 3, y: py(34.78), class: 'grat-label' }, grat).textContent = Math.abs(lon) + '°W';
-}
-for (let lat = 35; lat <= 42; lat++) {
-  el('line', { x1: -2000, y1: py(lat), x2: 3000, y2: py(lat), stroke: '#95a399', 'stroke-width': 0.5, opacity: 0.45, 'vector-effect': 'non-scaling-stroke', 'stroke-dasharray': '2 4' }, grat);
-  el('text', { x: px(-113.62), y: py(lat) - 3, class: 'grat-label' }, grat).textContent = lat + '°N';
-}
-
-el('path', { d: nvPath, fill: '#d4dad3' });
-const reliefGroup = el('g', { 'clip-path': 'url(#nvClip)' });
-el('rect', {
-  x: px(-120.2), y: py(42.2),
-  width: px(-113.8) - px(-120.2), height: py(34.8) - py(42.2),
-  filter: 'url(#nvRelief)',
-  opacity: '0.28',
-  style: 'mix-blend-mode: multiply; pointer-events: none;'
-}, reliefGroup);
-
-const lakes = el('g', { 'clip-path': 'url(#nvClip)', fill: '#9ab0b8', stroke: '#5c6b61', 'stroke-width': 0.6, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
-const LAKE_SHAPES = [
-  [[-120.16,39.24],[-120.06,39.25],[-120.00,39.24],[-119.94,39.22],[-119.93,39.15],[-119.95,39.06],[-119.95,38.96],[-120.01,38.93],[-120.08,38.94],[-120.14,38.99],[-120.16,39.08],[-120.17,39.17]],
-  [[-119.65,40.22],[-119.57,40.23],[-119.50,40.17],[-119.47,40.06],[-119.46,39.96],[-119.50,39.87],[-119.57,39.86],[-119.62,39.94],[-119.65,40.05],[-119.67,40.15]],
-  [[-118.77,38.82],[-118.71,38.82],[-118.68,38.74],[-118.67,38.64],[-118.70,38.57],[-118.75,38.58],[-118.77,38.66],[-118.78,38.75]],
-  [[-114.82,36.14],[-114.74,36.16],[-114.66,36.14],[-114.56,36.16],[-114.45,36.22],[-114.37,36.32],[-114.35,36.44],[-114.39,36.45],[-114.43,36.33],[-114.48,36.23],[-114.42,36.17],[-114.30,36.14],[-114.15,36.08],[-114.08,36.02],[-114.16,36.00],[-114.28,36.03],[-114.42,36.11],[-114.58,36.11],[-114.73,36.08],[-114.76,36.01],[-114.81,36.06]]
-];
-LAKE_SHAPES.forEach(poly => {
-  const d = 'M' + poly.map(pt => px(pt[0]).toFixed(1) + ',' + py(pt[1]).toFixed(1)).join('L') + 'Z';
-  el('path', { d }, lakes);
-});
-
-el('path', { d: nvPath, fill: 'none', stroke: '#29302c', 'stroke-width': 1.4, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' });
-
-[['OREGON',-118.6,42.25],['IDAHO',-115.6,42.25],['UTAH',-113.72,39.6],['ARIZONA',-113.8,35.6],['CALIFORNIA',-119.2,37.2]].forEach(s => {
-  const t = el('text', { x: px(s[1]), y: py(s[2]), class: 'state-label', 'text-anchor': 'middle' });
-  if (s[0] === 'CALIFORNIA') t.setAttribute('transform', `rotate(43 ${px(s[1])} ${py(s[2])})`);
-  if (s[0] === 'UTAH') t.setAttribute('transform', `rotate(90 ${px(s[1])} ${py(s[2])})`);
-  t.textContent = s[0];
-});
-const nvLabel = el('text', { x: px(-116.6), y: py(37.35), class: 'state-label', 'text-anchor': 'middle' });
-nvLabel.textContent = 'NEVADA'; nvLabel.style.fontSize = '22px'; nvLabel.style.opacity = 0.25;
-
-const layer = el('g', {});
-const order = { u: 0, o: 1, s: 2 };
-const markers = {};
-[...PEAKS].sort((a, b) => order[a.st] - order[b.st] || b.lat - a.lat).forEach(p => {
-  const g = el('g', { class: 'peak', 'data-id': p.id, tabindex: 0, role: 'button', 'aria-label': p.name }, layer);
-  el('circle', { r: 13, fill: 'transparent' }, g);
-  el('circle', { class: 'ring', r: 13, cy: -1, fill: 'none', stroke: '#29302c', 'stroke-width': 1, 'stroke-dasharray': '2 2' }, g);
-  if (p.st === 's') {
-    el('path', { d: 'M0 -8.5 L7.5 5.5 L-7.5 5.5 Z', fill: '#d49b27', stroke: '#29302c', 'stroke-width': 0.9, 'stroke-linejoin': 'round' }, g);
-    el('circle', { cy: 1.5, r: 1.6, fill: '#e3e7e2' }, g);
-  } else if (p.st === 'o') {
-    el('path', { d: 'M0 -8.5 L7.5 5.5 L-7.5 5.5 Z', fill: '#c2b28f', stroke: '#29302c', 'stroke-width': 0.9, 'stroke-linejoin': 'round' }, g);
-  } else {
-    el('path', { d: 'M0 -6.5 L6 4.5 L-6 4.5 Z', fill: '#e3e7e2', stroke: '#48524c', 'stroke-width': 1.2, 'stroke-linejoin': 'round' }, g);
-  }
-  el('text', { class: 'peak-label', y: 15, 'text-anchor': 'middle' }, g).textContent = p.name;
-  markers[p.id] = g;
-});
-
-const scaleBar = document.getElementById('scaleBar');
-function render() {
-  svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-  const r = svg.getBoundingClientRect();
-  const ppu = Math.min(r.width / vb.w, r.height / vb.h) || 1;
-  const k = Math.min(1.25, 1 / ppu);
-  PEAKS.forEach(p => markers[p.id].setAttribute('transform', `translate(${px(p.lon).toFixed(2)} ${py(p.lat).toFixed(2)}) scale(${k.toFixed(4)})`));
-  svg.classList.toggle('labels', ppu > 2.3);
-  scaleBar.style.width = Math.max(10, (50 / 69.0) * S * ppu) + 'px';
-}
-function toSvg(cx, cy) { const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy; return pt.matrixTransform(svg.getScreenCTM().inverse()); }
-function zoomAt(f, cx, cy) {
-  const nw = Math.max(BASE.w / 14, Math.min(BASE.w * 1.2, vb.w * f)); f = nw / vb.w;
-  const r = svg.getBoundingClientRect();
-  const p = toSvg(cx ?? r.left + r.width / 2, cy ?? r.top + r.height / 2);
-  vb = { x: p.x - (p.x - vb.x) * f, y: p.y - (p.y - vb.y) * f, w: nw, h: vb.h * f };
-  render();
-}
-svg.addEventListener('wheel', e => { e.preventDefault(); zoomAt(e.deltaY > 0 ? 1.18 : 1 / 1.18, e.clientX, e.clientY); }, { passive: false });
-document.getElementById('zIn').onclick = () => zoomAt(1 / 1.5);
-document.getElementById('zOut').onclick = () => zoomAt(1.5);
-document.getElementById('zReset').onclick = () => { vb = { ...BASE }; render(); };
-
-const ptrs = new Map(); let moved = 0, pinch = 0;
-svg.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, e); moved = 0; pinch = 0; });
-window.addEventListener('pointermove', e => {
-  if (!ptrs.has(e.pointerId)) return;
-  const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, e);
-  if (ptrs.size === 1) {
-    const dx = e.clientX - prev.clientX, dy = e.clientY - prev.clientY; moved += Math.abs(dx) + Math.abs(dy);
-    if (moved > 4) { const r = svg.getBoundingClientRect(), u = 1 / Math.min(r.width / vb.w, r.height / vb.h); vb.x -= dx * u; vb.y -= dy * u; svg.classList.add('dragging'); hideTip(); render(); }
-  } else if (ptrs.size === 2) {
-    const [a, b] = [...ptrs.values()], d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-    if (pinch) zoomAt(pinch / d, (a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2);
-    pinch = d; moved = 99;
-  }
-});
-window.addEventListener('pointerup', e => { ptrs.delete(e.pointerId); pinch = 0; svg.classList.remove('dragging'); });
-window.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); pinch = 0; });
-svg.addEventListener('click', e => { if (moved > 4) return; const g = e.target.closest('.peak'); if (g) select(+g.dataset.id); });
-svg.addEventListener('keydown', e => { const g = e.target.closest('.peak'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); select(+g.dataset.id); } });
-
-const tip = document.getElementById('tip'), wrap = document.getElementById('mapWrap');
-const hideTip = () => { tip.hidden = true; };
-svg.addEventListener('pointermove', e => {
-  const g = e.target.closest && e.target.closest('.peak');
-  if (!g || e.pointerType === 'touch') return hideTip();
-  const r = wrap.getBoundingClientRect();
-  tip.textContent = PEAKS[+g.dataset.id].name; tip.style.left = (e.clientX - r.left) + 'px'; tip.style.top = (e.clientY - r.top) + 'px'; tip.hidden = false;
-});
-svg.addEventListener('pointerleave', hideTip);
-
+const mapWrap = document.getElementById('mapWrap');
+const tip = document.getElementById('tip');
 const panel = document.getElementById('panel');
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const dms = (v, pos, neg) => { const a = Math.abs(v), d = Math.floor(a), m = Math.round((a - d) * 60); return (v >= 0 ? pos : neg) + ' ' + d + '°' + String(m).padStart(2, '0') + "'"; };
-let selected = null;
-function emptyPanel() {
-  panel.innerHTML = `<div class="empty-card">
-    <svg width="34" height="30" viewBox="-12 -12 24 22" opacity="0.6"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="none" stroke="#48524c" stroke-width="1.4" stroke-linejoin="round"/></svg>
-    <h3 class="empty-title">Select a peak</h3>
-    <p class="empty-body">Click any marker on the map to see prominence, date, lines skied, and the trip report. Rabbitbrush gold triangles are Skied Project Peaks; sand triangles are Other Skied Peaks/Zones; small hollow triangles are Unskied Project Peaks.</p>
-  </div>`;
+
+const el = (tag, attrs, parent) => {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  (parent || svg).appendChild(e);
+  return e;
+};
+
+const NV = [
+  [-120.0,42.0],[-117.03,42.0],[-114.04,42.0],[-114.05,37.0],[-114.05,36.19],
+  [-114.14,36.03],[-114.24,36.02],[-114.37,36.14],[-114.57,36.15],[-114.74,36.10],
+  [-114.74,36.0],[-114.70,35.85],[-114.63,35.55],[-114.63,35.15],[-114.73,35.0],
+  [-115.30,35.55],[-115.85,35.80],[-116.45,36.25],[-117.15,36.85],[-117.85,37.45],
+  [-118.55,38.10],[-119.25,38.65],[-119.75,39.05],[-120.00,39.05],[-120.00,42.0]
+];
+
+const gGrat = el('g', { class: 'graticule' });
+for (let lon = -120; lon >= -114; lon -= 2) {
+  const x = px(lon);
+  el('line', { x1: x, y1: py(42.3), x2: x, y2: py(34.8), stroke: '#95a399', 'stroke-width': 0.5, 'stroke-dasharray': '2 3', opacity: 0.65 }, gGrat);
+  const t = el('text', { x: x + 3, y: py(42.05), class: 'grat-label' }, gGrat);
+  t.textContent = Math.abs(lon) + '°W';
 }
-function select(id) {
-  if (selected !== null) markers[selected].classList.remove('sel');
-  selected = id;
-  if (id === null) return emptyPanel();
-  const p = PEAKS[id], c = CLS[p.st];
-  markers[id].classList.add('sel'); layer.appendChild(markers[id]);
-  let h = `<button class="panel-close" aria-label="Close">×</button>
-    <div class="panel-header">
+for (let lat = 36; lat <= 42; lat += 2) {
+  const y = py(lat);
+  el('line', { x1: px(-120.5), y1: y, x2: px(-113.6), y2: y, stroke: '#95a399', 'stroke-width': 0.5, 'stroke-dasharray': '2 3', opacity: 0.65 }, gGrat);
+  const t = el('text', { x: px(-119.92), y: y - 3, class: 'grat-label' }, gGrat);
+  t.textContent = lat + '°N';
+}
+
+const nvPoints = NV.map(([lon, lat]) => `${px(lon).toFixed(1)},${py(lat).toFixed(1)}`).join(' ');
+el('polygon', {
+  points: nvPoints,
+  fill: '#d4dad3',
+  stroke: '#5c6b61',
+  'stroke-width': 1.2,
+  'stroke-linejoin': 'round'
+});
+
+const stLabel = el('text', { x: px(-116.9), y: py(39.6), 'text-anchor': 'middle', class: 'state-label' });
+stLabel.textContent = 'NEVADA';
+
+const gPeaks = el('g', { class: 'peaks' });
+const markerEls = new Map();
+
+PEAKS.forEach(p => {
+  if (typeof p.lon !== 'number' || typeof p.lat !== 'number' || Number.isNaN(p.lon) || Number.isNaN(p.lat)) return;
+  const cx = px(p.lon), cy = py(p.lat);
+  const g = el('g', { class: `peak ${CLS[p.st]}`, transform: `translate(${cx.toFixed(1)},${cy.toFixed(1)})` }, gPeaks);
+  markerEls.set(p.id, g);
+
+  el('circle', { class: 'ring', r: 8.5, fill: 'none', stroke: '#8c3b32', 'stroke-width': 1.3 }, g);
+
+  if (p.st === 's') {
+    el('path', { d: 'M0 -6.5 L5.8 4.2 L-5.8 4.2 Z', fill: '#d49b27', stroke: '#29302c', 'stroke-width': 0.85 }, g);
+    el('circle', { cy: 1.1, r: 1.25, fill: '#e3e7e2' }, g);
+  } else if (p.st === 'o') {
+    el('path', { d: 'M0 -5.5 L5 3.8 L-5 3.8 Z', fill: '#c2b28f', stroke: '#29302c', 'stroke-width': 0.8 }, g);
+  } else {
+    el('path', { d: 'M0 -5 L4.5 3.4 L-4.5 3.4 Z', fill: '#e3e7e2', stroke: '#48524c', 'stroke-width': 1.1 }, g);
+  }
+
+  const lbl = el('text', { class: 'peak-label', x: 6.5, y: 2.5 }, g);
+  lbl.textContent = p.name;
+
+  g.addEventListener('mouseenter', () => {
+    tip.hidden = false;
+    tip.textContent = `${p.name} · ${p.range}`;
+  });
+  g.addEventListener('mousemove', e => {
+    const rect = mapWrap.getBoundingClientRect();
+    tip.style.left = (e.clientX - rect.left) + 'px';
+    tip.style.top = (e.clientY - rect.top) + 'px';
+  });
+  g.addEventListener('mouseleave', () => {
+    tip.hidden = true;
+  });
+  g.addEventListener('click', e => {
+    e.stopPropagation();
+    selectPeak(p.id);
+  });
+});
+
+function applyViewBox() {
+  svg.setAttribute('viewBox', `${vb.x.toFixed(2)} ${vb.y.toFixed(2)} ${vb.w.toFixed(2)} ${vb.h.toFixed(2)}`);
+  const zoomRatio = BASE.w / vb.w;
+  svg.classList.toggle('labels', zoomRatio >= 1.65);
+  updateScaleBar();
+}
+
+function updateScaleBar() {
+  const bar = document.getElementById('scaleBar');
+  if (!bar) return;
+  const rect = svg.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  const scaleX = rect.width / vb.w;
+  const scaleY = rect.height / vb.h;
+  const pxPerSvgUnit = Math.min(scaleX, scaleY);
+  const fiftyMilesInSvgUnits = 50 * KX * S;
+  bar.style.width = Math.max(24, Math.round(fiftyMilesInSvgUnits * pxPerSvgUnit)) + 'px';
+}
+
+function zoomAt(factor, clientX, clientY) {
+  const rect = svg.getBoundingClientRect();
+  const rx = clientX != null ? (clientX - rect.left) / rect.width : 0.5;
+  const ry = clientY != null ? (clientY - rect.top) / rect.height : 0.5;
+  const nextW = Math.min(BASE.w * 1.25, Math.max(BASE.w * 0.12, vb.w * factor));
+  const nextH = nextW * (BASE.h / BASE.w);
+  const anchorX = vb.x + rx * vb.w;
+  const anchorY = vb.y + ry * vb.h;
+  vb = {
+    x: anchorX - rx * nextW,
+    y: anchorY - ry * nextH,
+    w: nextW,
+    h: nextH
+  };
+  applyViewBox();
+}
+
+document.getElementById('zIn').addEventListener('click', () => zoomAt(0.72));
+document.getElementById('zOut').addEventListener('click', () => zoomAt(1.35));
+document.getElementById('zReset').addEventListener('click', () => { vb = { ...BASE }; applyViewBox(); });
+
+svg.addEventListener('wheel', e => {
+  e.preventDefault();
+  zoomAt(e.deltaY < 0 ? 0.85 : 1.18, e.clientX, e.clientY);
+}, { passive: false });
+
+let drag = null;
+svg.addEventListener('pointerdown', e => {
+  if (e.target.closest('.peak')) return;
+  drag = { x: e.clientX, y: e.clientY, vb: { ...vb } };
+  svg.setPointerCapture(e.pointerId);
+  svg.classList.add('dragging');
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const rect = svg.getBoundingClientRect();
+  const dx = ((e.clientX - drag.x) / rect.width) * drag.vb.w;
+  const dy = ((e.clientY - drag.y) / rect.height) * drag.vb.h;
+  vb.x = drag.vb.x - dx;
+  vb.y = drag.vb.y - dy;
+  applyViewBox();
+});
+const endDrag = () => {
+  if (!drag) return;
+  drag = null;
+  svg.classList.remove('dragging');
+};
+svg.addEventListener('pointerup', endDrag);
+svg.addEventListener('pointercancel', endDrag);
+window.addEventListener('resize', updateScaleBar);
+
+/* ---------- Detail Panel ---------- */
+function renderEmptyPanel() {
+  panel.innerHTML = `
+    <div class="empty-card">
+      <div class="section-label">Peak Dossier</div>
+      <h2 class="empty-title">Select a peak on the map</h2>
+      <p class="empty-body">Click any marker to inspect its mountain range, prominence, skied lines, trip report, and field photo.</p>
+    </div>
+  `;
+}
+
+function selectPeak(id) {
+  selectedId = id;
+  markerEls.forEach((g, pid) => g.classList.toggle('sel', pid === id));
+  const p = PEAKS.find(item => item.id === id);
+  if (!p) { renderEmptyPanel(); return; }
+
+  const codeNum = String(p.id + 1).padStart(2, '0');
+  const cls = CLS[p.st];
+  const promText = p.prom != null ? `${p.prom.toLocaleString()}<span class="stat-unit">ft</span>` : '<span class="muted">—</span>';
+
+  panel.innerHTML = `
+    <button class="panel-close" id="panelClose" aria-label="Close dossier">×</button>
+    <header class="panel-header">
       <div class="panel-row">
-        <div class="code-large ${c}">${p.st === 'u' ? '△' : '▲'}</div>
-        <div><div class="panel-kind">${KIND[p.st]}</div><div class="panel-status ${c}">${STATUS[p.st]}</div></div>
+        <span class="code-large ${cls}">#${codeNum}</span>
+        <div>
+          <div class="panel-kind">${esc(KIND[p.st])}</div>
+          <div class="panel-status ${cls}">${esc(STATUS[p.st])}</div>
+        </div>
       </div>
       <h2 class="panel-name">${esc(p.name)}</h2>
-      <div class="panel-coords">${dms(p.lat, 'N', 'S')}, ${dms(p.lon, 'E', 'W')}</div>
-    </div>`;
-  if (p.st === 'u') {
-    h += `<p class="planned-text">Not skied yet. This one is still on the project list.</p>`;
-  } else {
-    h += `<div class="stats">
-        <div class="stat"><div class="stat-label">Prominence</div><div class="stat-value">${p.prom.toLocaleString('en-US')}<span class="stat-unit">ft</span></div></div>
-        <div class="stat"><div class="stat-label">Date skied</div><div class="stat-text">${esc(p.date)}</div></div>
-        <div class="stat wide"><div class="stat-label">Line(s) skied</div><div class="stat-text">${esc(p.lines)}</div></div>
-      </div>`;
-    if (p.photo) h += `<div class="photo-sec"><div class="section-label">From the day</div>
-        <a class="photo" href="${esc(p.photo)}" target="_blank" rel="noopener"><img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.closest('.photo-sec').remove()"></a></div>`;
-    if (p.report) h += `<a class="cta" href="${esc(p.report)}" target="_blank" rel="noopener"><span>View trip report</span><span>→</span></a>`;
-  }
-  panel.innerHTML = h; panel.scrollTop = 0;
-  panel.querySelector('.panel-close').onclick = () => select(null);
-}
+      <div class="panel-coords">${esc(p.range)} · ${p.lat.toFixed(4)}°N, ${Math.abs(p.lon).toFixed(4)}°W</div>
+    </header>
 
-const rows = document.getElementById('rows');
-let filter = 'all', sort = { key: 'date', dir: -1 };
-const glyph = {
-  s: '<svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#d49b27" stroke="#29302c" stroke-width="1"/><circle cy="1.5" r="1.6" fill="#e3e7e2"/></svg>',
-  o: '<svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#c2b28f" stroke="#29302c" stroke-width="1"/></svg>',
-  u: '<svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#e3e7e2" stroke="#48524c" stroke-width="1.3"/></svg>'
-};
-function drawLedger() {
-  const val = { name: p => p.name.toLowerCase(), prom: p => p.prom, date: p => p.ts }[sort.key];
-  const list = PEAKS.filter(p => filter === 'all' || p.st === filter).sort((a, b) => {
-    if ((a.st === 'u') !== (b.st === 'u') && sort.key !== 'name') return a.st === 'u' ? 1 : -1;
-    const x = val(a), y = val(b); return (x < y ? -1 : x > y ? 1 : 0) * sort.dir || a.name.localeCompare(b.name);
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Range</div>
+        <div class="stat-text">${esc(p.range || '—')}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Prominence</div>
+        <div class="stat-value">${promText}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Date Skied</div>
+        <div class="stat-text">${esc(p.date || 'Unskied')}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Line(s) Skied</div>
+        <div class="stat-text">${esc(p.lines || '—')}</div>
+      </div>
+    </div>
+
+    ${p.photo ? `
+      <div class="section-label">Field Photo</div>
+      <figure class="photo">
+        <img src="${esc(p.photo)}" alt="${esc(p.name)} in the ${esc(p.range)}" loading="lazy">
+      </figure>
+    ` : `
+      <p class="planned-text">No field photo logged yet for ${esc(p.name)} (${esc(p.range)}).</p>
+    `}
+
+    ${p.report ? `
+      <a class="cta" href="${esc(p.report)}" target="_blank" rel="noopener">
+        <span>Read Trip Report</span>
+        <span>↗</span>
+      </a>
+    ` : ''}
+  `;
+
+  document.getElementById('panelClose').addEventListener('click', () => {
+    selectedId = null;
+    markerEls.forEach(g => g.classList.remove('sel'));
+    renderEmptyPanel();
   });
-  rows.innerHTML = list.map(p => `<tr data-id="${p.id}">
-    <td>${glyph[p.st]}</td><td class="name">${esc(p.name)}</td>
-    <td class="num col-prom">${p.prom ? p.prom.toLocaleString('en-US') + ' ft' : '<span class="muted">·</span>'}</td>
-    <td class="mono">${p.date ? esc(p.date) : '<span class="muted">Unskied</span>'}</td>
-    <td class="lines col-lines">${esc(p.lines)}</td>
-    <td>${p.report ? `<a href="${esc(p.report)}" target="_blank" rel="noopener">Read →</a>` : ''}</td></tr>`).join('');
-  document.querySelectorAll('th[data-sort]').forEach(th => { const a = th.querySelector('.arr'); if (a) a.remove();
-    if (th.dataset.sort === sort.key) th.insertAdjacentHTML('beforeend', `<span class="arr">${sort.dir > 0 ? '↑' : '↓'}</span>`); });
 }
-document.querySelectorAll('th[data-sort]').forEach(th => th.onclick = () => {
-  sort = th.dataset.sort === sort.key ? { key: sort.key, dir: -sort.dir } : { key: th.dataset.sort, dir: th.dataset.sort === 'name' ? 1 : -1 }; drawLedger(); });
-document.getElementById('filters').onclick = e => { const b = e.target.closest('[data-f]'); if (!b) return;
-  filter = b.dataset.f; document.querySelectorAll('#filters .tab').forEach(t => t.classList.toggle('active', t === b)); drawLedger(); };
-rows.onclick = e => { if (e.target.closest('a')) return; const tr = e.target.closest('tr'); if (!tr) return;
-  const p = PEAKS[+tr.dataset.id]; show('map'); const w = BASE.w / 3.2, h = BASE.h / 3.2;
-  vb = { x: px(p.lon) - w / 2, y: py(p.lat) - h / 2, w, h }; render(); select(p.id); };
 
-function show(v) {
-  document.getElementById('viewMap').hidden = v !== 'map';
-  document.getElementById('viewLedger').hidden = v !== 'ledger';
-  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.view === v));
-  if (v === 'map') render();
+renderEmptyPanel();
+applyViewBox();
+
+/* ---------- Ledger ---------- */
+let currentFilter = 'all';
+let sortKey = 'date';
+let sortDir = -1;
+const tbody = document.getElementById('rows');
+
+document.querySelectorAll('#filters .tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#filters .tab').forEach(b => b.classList.toggle('active', b === btn));
+    currentFilter = btn.dataset.f;
+    renderLedger();
+  });
+});
+
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    if (sortKey === key) sortDir *= -1;
+    else { sortKey = key; sortDir = key === 'prom' || key === 'date' ? -1 : 1; }
+    document.querySelectorAll('th[data-sort] .arr').forEach(s => s.textContent = '');
+    const arr = th.querySelector('.arr') || (() => {
+      const s = document.createElement('span');
+      s.className = 'arr';
+      th.appendChild(s);
+      return s;
+    })();
+    arr.textContent = sortDir > 0 ? '↑' : '↓';
+    renderLedger();
+  });
+});
+
+function renderLedger() {
+  const list = PEAKS.filter(p => currentFilter === 'all' || p.st === currentFilter).slice().sort((a, b) => {
+    if (sortKey === 'prom') return ((a.prom ?? -1) - (b.prom ?? -1)) * sortDir;
+    if (sortKey === 'date') return (a.ts - b.ts) * sortDir;
+    return String(a[sortKey] || '').localeCompare(String(b[sortKey] || '')) * sortDir;
+  });
+
+  tbody.innerHTML = list.map(p => {
+    const badge = p.st === 's' ? '●' : p.st === 'o' ? '◐' : '○';
+    return `
+      <tr data-id="${p.id}">
+        <td class="mono" title="${esc(KIND[p.st])}">${badge}</td>
+        <td class="name">
+          <div>${esc(p.name)}</div>
+          <div class="mono" style="font-size:11px;margin-top:2px;">${esc(p.range)}</div>
+        </td>
+        <td class="num col-prom">${p.prom != null ? p.prom.toLocaleString() + ' ft' : '<span class="muted">—</span>'}</td>
+        <td class="mono">${esc(p.date || '—')}</td>
+        <td class="lines col-lines">${esc(p.lines || '—')}</td>
+        <td>${p.report ? `<a href="${esc(p.report)}" target="_blank" rel="noopener">Report ↗</a>` : '<span class="muted">—</span>'}</td>
+      </tr>
+    `;
+  }).join('');
+
+  tbody.querySelectorAll('tr').forEach(tr => {
+    tr.addEventListener('click', e => {
+      if (e.target.closest('a')) return;
+      const id = Number(tr.dataset.id);
+      document.querySelector('.tabs .tab[data-view="map"]').click();
+      selectPeak(id);
+    });
+  });
 }
-document.querySelectorAll('.tabs .tab').forEach(t => t.onclick = () => show(t.dataset.view));
-window.addEventListener('resize', render);
-emptyPanel(); drawLedger(); render();
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+
+renderLedger();
 </script>
 </body>
 </html>
