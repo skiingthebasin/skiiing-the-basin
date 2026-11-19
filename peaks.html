@@ -93,7 +93,6 @@ svg.labels .peak-label { display: block; }
 .panel { background: var(--paper-deep); padding: 32px 28px; overflow-y: auto; position: relative; }
 .empty-card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding-top: 40px; }
 .empty-title { font-family: var(--font-display); font-size: 28px; font-weight: 400; margin: 0; letter-spacing: -0.02em; }
-.empty-body { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0; max-width: 320px; }
 .panel-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: transparent; border: 1px solid var(--contour); cursor: pointer; font-size: 18px; line-height: 1; color: var(--ink-soft); transition: all 0.15s; }
 .panel-close:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .panel-header { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px dashed var(--contour); }
@@ -633,7 +632,6 @@ function renderEmptyPanel() {
   panel.innerHTML = `
     <div class="empty-card">
       <h2 class="empty-title">Select a peak on the map</h2>
-      <p class="empty-body">Click any marker to inspect its mountain range, prominence, skied lines, trip report, and photo.</p>
     </div>
   `;
 }
