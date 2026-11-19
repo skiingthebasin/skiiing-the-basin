@@ -453,7 +453,7 @@ const nvBasePoly = el('polygon', {
 const demGroup = el('g', { 'clip-path': 'url(#nvClip)', 'pointer-events': 'none' });
 const demMinLon = -120.2, demMaxLon = -113.9, demMinLat = 34.9, demMaxLat = 42.1;
 const demImg = el('image', {
-  href: `https://elevation.nationalmap.gov/arcgis/rest/services/3DElevation/ImageServer/exportImage?bbox=${demMinLon},${demMinLat},${demMaxLon},${demMaxLat}&bboxSR=4326&imageSR=4326&size=1200,1400&format=jpg&pixelType=U8&interpolation=RSP_BilinearInterpolation&f=image`,
+  href: 'images/nv-hillshade.jpg',
   x: px(demMinLon).toFixed(2),
   y: py(demMaxLat).toFixed(2),
   width: (px(demMaxLon) - px(demMinLon)).toFixed(2),
@@ -462,6 +462,10 @@ const demImg = el('image', {
   filter: 'url(#demTint)',
   opacity: '0.82'
 }, demGroup);
+
+demImg.addEventListener('error', () => {
+  demImg.style.display = 'none';
+});
 
 // Crisp state border overlay above hillshade
 const nvBorderPoly = el('polygon', {
