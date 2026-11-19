@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supporters · Skiing the Basin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Sage Gray-Green Great Basin Palette */
+  --paper: #e3e7e2;
+  --paper-deep: #d4dad3;
+  --ink: #29302c;
+  --ink-soft: #48524c;
+  --contour: #95a399;
+  --contour-dark: #5c6b61;
+  --accent: #8c3b32;
+  --accent-soft: #a86259;
+  --water: #9ab0b8;
+
+  /* Peak Marker Colors */
+  --rabbitbrush: #d49b27;
+  --sand: #c2b28f;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse at top left, rgba(0,0,0,0.015), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(0,0,0,0.025), transparent 60%),
+    var(--paper);
+}
+
+/* Header */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 32px;
+  border-bottom: 1.5px solid var(--contour-dark);
+  background: var(--paper);
+  position: relative;
+  z-index: 10;
+}
+.hdr-left { display: flex; align-items: center; gap: 24px; }
+
+.counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--contour-dark);
+  background: var(--paper-deep);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.counter:hover {
+  border-color: var(--ink);
+  background: #dce2da;
+}
+.counter-num { font-size: 20px; font-weight: 700; color: var(--rabbitbrush); text-shadow: 0 0 1px rgba(41,48,44,0.4); }
+.counter-div { color: var(--contour); }
+.counter-total { font-size: 16px; font-weight: 600; color: var(--ink); }
+.counter-label { margin-left: 6px; color: var(--ink-soft); font-size: 10px; }
+
+.nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 14px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--ink); border-color: var(--contour); }
+.nav a.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Main Content */
+.content-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+  width: 100%;
+}
+
+.page-intro {
+  max-width: 680px;
+  margin-bottom: 48px;
+}
+
+.page-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.page-intro h1 {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+
+.page-intro p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* Moment Feature Section */
+.brand-showcase {
+  background: var(--paper-deep);
+  border: 1.5px solid var(--contour-dark);
+  padding: 36px 32px 32px;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--contour);
+}
+
+.brand-identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand-logo {
+  max-height: 54px;
+  width: auto;
+  display: block;
+}
+
+.brand-meta-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  padding: 5px 10px;
+  border: 1px solid var(--contour);
+  background: var(--paper);
+}
+
+.quiver-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--contour-dark);
+  margin: 0;
+}
+
+/* Horizontal Ski Quiver Accordion */
+.quiver-accordion {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  height: 560px;
+  width: 100%;
+}
+
+.ski-panel {
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 108px;
+  background: var(--paper);
+  border: 1px solid var(--contour-dark);
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    flex 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.ski-panel:hover,
+.ski-panel.is-open,
+.ski-panel:focus-within {
+  flex: 3.4 1 0%;
+  background: #ebeae4;
+  border-color: var(--ink);
+}
+
+/* Left Column: Tall Ski Side/Top Profile + Bottom Category Label */
+.ski-visual-col {
+  flex: 0 0 124px;
+  width: 124px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px 10px 16px;
+  position: relative;
+  z-index: 2;
+  transition: flex-basis 0.35s ease, width 0.35s ease;
+}
+
+.ski-img-stage {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 14px;
+  overflow: hidden;
+}
+
+.ski-img-stage img {
+  height: var(--ski-scale, 94%);
+  max-height: 455px;
+  width: auto;
+  max-width: 84px;
+  object-fit: contain;
+  filter: drop-shadow(3px 6px 8px rgba(41, 48, 44, 0.22));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ski-panel:hover .ski-img-stage img,
+.ski-panel.is-open .ski-img-stage img {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.ski-category-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.3;
+  padding-top: 8px;
+  border-top: 1px solid var(--contour);
+  width: 100%;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ski-panel:hover .ski-category-label,
+.ski-panel.is-open .ski-category-label {
+  color: var(--accent);
+  border-color: var(--accent-soft);
+}
+
+/* Right Drawer: Revealed Specs + Punk Lo-Fi Video */
+.ski-detail-drawer {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(175px, 1fr) minmax(190px, 235px);
+  gap: 20px;
+  align-items: center;
+  padding: 24px 24px 24px 8px;
+  opacity: 0;
+  transform: translateX(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease 0.08s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+}
+
+.ski-panel:hover .ski-detail-drawer,
+.ski-panel.is-open .ski-detail-drawer,
+.ski-panel:focus-within .ski-detail-drawer {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.ski-specs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 165px;
+}
+
+.ski-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--paper);
+  background: var(--accent);
+  padding: 3px 8px;
+  margin-bottom: 10px;
+}
+
+.ski-title {
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+.spec-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--contour);
+}
+
+.spec-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--contour);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.spec-key {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.spec-val {
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* Punk Zine Video Frame */
+.ski-video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 440px;
+  background: #181c1a;
+  border: 1.5px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--contour-dark);
+  overflow: hidden;
+}
+
+.ski-video-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.08) saturate(0.92);
+}
+
+/* Subtle CRT / Zine Scanline Overlay */
+.ski-video-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(18, 22, 20, 0.14) 3px,
+    rgba(18, 22, 20, 0.14) 4px
+  );
+  pointer-events: none;
+}
+
+.video-stamp {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #e3e7e2;
+  background: rgba(24, 28, 26, 0.78);
+  padding: 2px 6px;
+  border: 1px solid rgba(227, 231, 226, 0.25);
+  pointer-events: none;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 960px) {
+  .quiver-accordion {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .ski-panel {
+    flex: none;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .ski-panel:hover,
+  .ski-panel.is-open,
+  .ski-panel:focus-within {
+    flex: none;
+  }
+
+  .ski-visual-col {
+    width: 100%;
+    flex: none;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+  }
+
+  .ski-img-stage {
+    flex: 0 0 auto;
+    width: auto;
+    padding-bottom: 0;
+  }
+
+  .ski-img-stage img {
+    height: 110px;
+    max-width: none;
+  }
+
+  .ski-category-label {
+    width: auto;
+    border-top: none;
+    padding-top: 0;
+    font-size: 12px;
+  }
+
+  .ski-detail-drawer {
+    display: none;
+    opacity: 1;
+    transform: none;
+    padding: 0 20px 22px;
+    grid-template-columns: 1fr 180px;
+  }
+
+  .ski-panel.is-open .ski-detail-drawer,
+  .ski-panel:hover .ski-detail-drawer {
+    display: grid;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 820px) {
+  .counter-label { display: none; }
+  .hdr { padding: 14px 20px; flex-direction: column; align-items: stretch; gap: 10px; }
+  .hdr-left { justify-content: space-between; }
+  .nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  .nav a { padding: 7px 10px; font-size: 11px; }
+  .content-container { padding: 36px 20px 60px; }
+  .brand-showcase { padding: 24px 18px; }
+}
+
+@media (max-width: 560px) {
+  .ski-detail-drawer {
+    grid-template-columns: 1fr;
+  }
+  .ski-video-frame {
+    max-width: 240px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-left">
+      <a class="counter" href="peaks.html" aria-label="Skied project peaks progress">
+        <span class="counter-num" id="cNum">–</span><span class="counter-div">/</span><span class="counter-total" id="cTot">64</span>
+        <span class="counter-label">skied project peaks</span>
+      </a>
+    </div>
+    <nav class="nav">
+      <a href="index.html">The Project</a>
+      <a href="peaks.html">The Peaks</a>
+      <a href="people.html">The People</a>
+      <a class="active" href="supporters.html" aria-current="page">Supporters</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="content-container">
+    <div class="page-intro">
+      <p class="page-kicker">Gear &amp; Backers</p>
+      <h1>Supporters</h1>
+      <p>Skiing sixty-four prominent peaks across the Great Basin takes reliable tools and people who believe in the mission. Here is the quiver keeping this project moving.</p>
+    </div>
+
+    <!-- Moment Skis Quiver Showcase -->
+    <section class="brand-showcase" aria-label="Moment Skis Quiver">
+      <div class="brand-header">
+        <div class="brand-identity">
+          <img
+            src="images/moment/moment_logo.png"
+            alt="Moment Skis"
+            class="brand-logo"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          >
+          <span style="display:none; font-family:var(--font-display); font-size:28px; font-weight:600; letter-spacing:-0.02em;">Moment Skis</span>
+          <span class="brand-meta-tag">Reno, NV · Factory Quiver</span>
+        </div>
+        <p class="quiver-hint">Hover or tap a ski to inspect &rarr;</p>
+      </div>
+
+      <div class="quiver-accordion" id="momentQuiver"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+// Quiver ordered left-to-right: C, DWT, M, CB
+const MOMENT_QUIVER = [
+  {
+    id: 'ski_C',
+    name: 'Countach Tour 98',
+    length: '179 cm', // Update if yours is a different length
+    category: 'Big Vertical',
+    waist: '98 mm',
+    role: 'Long approaches & firm couloirs',
+    scalePct: '90%'
+  },
+  {
+    id: 'ski_DWT',
+    name: 'Deathwish Tour 104',
+    length: '179 cm',
+    category: 'Daily Drivers',
+    waist: '104 mm',
+    role: 'Triple camber all-mountain touring',
+    scalePct: '90%'
+  },
+  {
+    id: 'ski_M',
+    name: 'Meridian 107',
+    length: '182 cm',
+    category: 'Mank Tamers',
+    waist: '107 mm',
+    role: 'Full rocker variable snow destroyer',
+    scalePct: '93%'
+  },
+  {
+    id: 'ski_CB',
+    name: 'Chipotle Banana',
+    length: '186 cm',
+    category: 'Pow Pow',
+    waist: '122 mm',
+    role: 'Deep Great Basin storm days',
+    scalePct: '97%'
+  }
+];
+
+(function initMomentQuiver() {
+  const container = document.getElementById('momentQuiver');
+  if (!container) return;
+
+  MOMENT_QUIVER.forEach((ski, idx) => {
+    const panel = document.createElement('article');
+    panel.className = 'ski-panel';
+    panel.tabIndex = 0;
+    panel.setAttribute('aria-label', `${ski.name} — ${ski.category}`);
+    panel.style.setProperty('--ski-scale', ski.scalePct);
+
+    panel.innerHTML = `
+      <div class="ski-visual-col">
+        <div class="ski-img-stage">
+          <img src="images/moment/${ski.id}.webp" alt="${ski.name} ski profile">
+        </div>
+        <span class="ski-category-label">${ski.category}</span>
+      </div>
+
+      <div class="ski-detail-drawer">
+        <div class="ski-specs">
+          <span class="ski-badge">${ski.category}</span>
+          <h2 class="ski-title">${ski.name}</h2>
+          <ul class="spec-list">
+            <li><span class="spec-key">Length</span><span class="spec-val">${ski.length}</span></li>
+            <li><span class="spec-key">Waist</span><span class="spec-val">${ski.waist}</span></li>
+            <li><span class="spec-key">Mission</span><span class="spec-val">${ski.role}</span></li>
+          </ul>
+        </div>
+
+        <div class="ski-video-frame">
+          <video
+            src="images/moment/${ski.id}.mp4"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          ></video>
+          <span class="video-stamp">REC · ${ski.length}</span>
+        </div>
+      </div>
+    `;
+
+    const video = panel.querySelector('video');
+
+    const playClip = () => {
+      if (video && video.paused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    const pauseClip = () => {
+      if (video && !video.paused) {
+        video.pause();
+      }
+    };
+
+    // Desktop hover playback
+    panel.addEventListener('mouseenter', playClip);
+    panel.addEventListener('mouseleave', () => {
+      if (!panel.classList.contains('is-open')) pauseClip();
+    });
+
+    // Keyboard focus playback
+    panel.addEventListener('focus', playClip);
+    panel.addEventListener('blur', () => {
+      if (!panel.classList.contains('is-open')) pauseClip();
+    });
+
+    // Touch / click toggle so mobile & tablet users can lock panels open
+    panel.addEventListener('click', () => {
+      const wasOpen = panel.classList.contains('is-open');
+      container.querySelectorAll('.ski-panel').forEach(p => {
+        p.classList.remove('is-open');
+        const v = p.querySelector('video');
+        if (v) v.pause();
+      });
+
+      if (!wasOpen) {
+        panel.classList.add('is-open');
+        playClip();
+      }
+    });
+
+    container.appendChild(panel);
+  });
+})();
+
+// Sync Skied Project Peaks Counter with peaks.html
+(async function syncPeakCounter() {
+  try {
+    const res = await fetch('peaks.html', { cache: 'no-store' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const match = text.match(/const\s+RAW\s*=\s*(\[[\s\S]*?\n\]);/);
+    if (!match) return;
+    const rawRows = Function(`"use strict"; return (${match[1]});`)();
+    const normalized = rawRows.map(r => r[2] || 'u');
+    const nS = normalized.filter(st => st === 's').length;
+    const nU = normalized.filter(st => st === 'u').length;
+    document.getElementById('cNum').textContent = nS;
+    document.getElementById('cTot').textContent = nS + nU;
+  } catch {
+    // Graceful fallback when opened locally over file://
+  }
+})();
+</script>
+</body>
+</html>
