@@ -210,7 +210,7 @@ td a:hover { text-decoration: underline; }
         <div class="scale"><div class="scale-row"><span>0</span><span>50 mi</span></div><div class="scale-bar" id="scaleBar"></div></div>
         <div class="legend">
           <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#d49b27" stroke="#29302c" stroke-width="1"/><circle cy="1.5" r="1.6" fill="#e3e7e2"/></svg><span>Skied Project Peaks</span></div>
-          <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#c2b28f" stroke="#29302c" stroke-width="1"/></svg><span>Other Skied Peaks/Zones</span></div>
+          <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -8.5 L7.5 5.5 L-7.5 5.5 Z" fill="#c2b28f" stroke="#29302c" stroke-width="1"/></svg><span>Other Skied Peaks & Points</span></div>
           <div class="legend-row"><svg width="16" height="16" viewBox="-10 -11 20 20"><path d="M0 -6.5 L6 4.5 L-6 4.5 Z" fill="#e3e7e2" stroke="#48524c" stroke-width="1.3"/></svg><span>Unskied Project Peaks</span></div>
         </div>
         <div class="tooltip" id="tip" hidden></div>
@@ -224,13 +224,13 @@ td a:hover { text-decoration: underline; }
           <div class="totals">
             <div class="total"><div class="total-num acc" id="tSkied"></div><div class="total-label">Skied Project Peaks</div></div>
             <div class="total"><div class="total-num" id="tLeft"></div><div class="total-label">Unskied Project Peaks</div></div>
-            <div class="total"><div class="total-num" id="tOther"></div><div class="total-label">Other Skied Peaks/Zones</div></div>
+            <div class="total"><div class="total-num" id="tOther"></div><div class="total-label">Other Skied Peaks & Points</div></div>
           </div>
         </div>
         <div class="filters" id="filters">
           <button class="tab boxed active" data-f="all">All</button>
           <button class="tab boxed" data-f="s">Skied Project Peaks</button>
-          <button class="tab boxed" data-f="o">Other Skied Peaks/Zones</button>
+          <button class="tab boxed" data-f="o">Other Skied Peaks & Points </button>
           <button class="tab boxed" data-f="u">Unskied Project Peaks</button>
         </div>
         <table>
@@ -238,7 +238,7 @@ td a:hover { text-decoration: underline; }
             <th></th>
             <th data-sort="name">Peak</th>
             <th data-sort="prom" class="num col-prom">Prominence</th>
-            <th data-sort="date">Date skied</th>
+            <th data-sort="date">Date first skied</th>
             <th class="col-lines">Line(s) skied</th>
             <th>Report</th>
           </tr></thead>
@@ -374,7 +374,7 @@ const PEAKS = RAW.map((r, i) => {
   };
 });
 
-const KIND = { s: 'Skied Project Peak', o: 'Other Skied Peak/Zone', u: 'Unskied Project Peak' };
+const KIND = { s: 'Skied Project Peak', o: 'Other Skied Peaks & Points', u: 'Unskied Project Peak' };
 const CLS = { s: 'skied', o: 'other', u: 'unskied' };
 const count = st => PEAKS.filter(p => p.st === st).length;
 const nS = count('s'), nU = count('u'), nO = count('o');
