@@ -351,13 +351,7 @@ a { color: inherit; text-decoration: none; }
   const px = lon => (lon - LON0) * KX * S;
   const py = lat => (LAT0 - lat) * S;
 
-  const minX = px(-120.6);
-  const maxX = px(-110.7);
-  const minY = py(43.95);
-  const maxY = py(34.7);
-
   const svg = document.getElementById('basinOverviewSvg');
-  svg.setAttribute('viewBox', `${minX.toFixed(1)} ${minY.toFixed(1)} ${(maxX - minX).toFixed(1)} ${(maxY - minY).toFixed(1)}`);
 
   const addEl = (tag, attrs, parent) => {
     const node = document.createElementNS(NS, tag);
@@ -366,8 +360,8 @@ a { color: inherit; text-decoration: none; }
     return node;
   };
 
-  // Detailed Nevada state outline (lon, lat) matching peaks page geometry
-  const NV_RING = [
+  // Fallback Nevada outline (lon, lat) if data/nevada.geojson is unavailable
+  const NV_FALLBACK_RINGS = [[
     [-120.002,41.994],[-118.698,41.988],[-117.028,41.997],[-114.042,41.994],
     [-114.047,37.000],[-114.051,36.188],[-114.136,36.028],[-114.242,36.018],
     [-114.374,36.135],[-114.573,36.148],[-114.742,36.099],[-114.744,36.002],
@@ -376,9 +370,9 @@ a { color: inherit; text-decoration: none; }
     [-116.642,36.418],[-117.125,36.825],[-117.645,37.278],[-118.185,37.752],
     [-118.718,38.222],[-119.245,38.672],[-119.685,38.995],[-119.952,39.168],
     [-120.004,39.255],[-120.003,38.998],[-120.002,41.994]
-  ];
+  ]];
 
-  // Fallback HUC-16 rings if data/huc16.geojson isn't available yet
+  // Fallback HUC-16 rings if data/huc16.geojson is unavailable
   const HUC16_FALLBACK_RINGS = [[
     [-119.98,42.02],[-120.18,42.32],[-120.32,42.78],[-120.12,43.25],[-119.65,43.62],
     [-119.05,43.78],[-118.52,43.52],[-118.35,43.05],[-118.22,42.55],[-118.08,42.12],
@@ -394,31 +388,65 @@ a { color: inherit; text-decoration: none; }
     [-120.02,39.62],[-120.08,40.18],[-120.12,40.78],[-120.05,41.42],[-119.98,42.02]
   ]];
 
-  const ringToPath = rings => rings.map(ring =>
-    'M ' + ring.map(([lon, lat]) => `${px(lon).toFixed(1)},${py(lat).toFixed(1)}`).join(' L ') + ' Z'
-  ).join(' ');
-
-  async function getHuc16Rings() {
-    try {
-      const res = await fetch('data/huc16.geojson', { cache: 'no-store' });
-      if (!res.ok) return HUC16_FALLBACK_RINGS;
-      const gj = await res.json();
-      const rings = [];
-      const features = gj.type === 'FeatureCollection' ? gj.features : [gj];
-      for (const f of features) {
-        const geom = f.geometry || f;
-        if (geom.type === 'Polygon') rings.push(geom.coordinates[0]);
-        if (geom.type === 'MultiPolygon') {
-          for (const poly of geom.coordinates) rings.push(poly[0]);
+  function extractOuterRingsFromGeoJson(gj) {
+    const rings = [];
+    const features = gj.type === 'FeatureCollection' ? gj.features : [gj];
+    for (const f of features) {
+      const geom = f.geometry || f;
+      if (!geom) continue;
+      if (geom.type === 'Polygon' && geom.coordinates[0]) {
+        rings.push(geom.coordinates[0]);
+      } else if (geom.type === 'MultiPolygon') {
+        for (const poly of geom.coordinates) {
+          if (poly[0]) rings.push(poly[0]);
         }
       }
-      return rings.length ? rings : HUC16_FALLBACK_RINGS;
+    }
+    return rings;
+  }
+
+  async function loadGeoJsonRings(url, fallbackRings) {
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) return fallbackRings;
+      const gj = await res.json();
+      const rings = extractOuterRingsFromGeoJson(gj);
+      return rings.length ? rings : fallbackRings;
     } catch {
-      return HUC16_FALLBACK_RINGS;
+      return fallbackRings;
     }
   }
 
-  const huc16Rings = await getHuc16Rings();
+  const [nevadaRings, huc16Rings] = await Promise.all([
+    loadGeoJsonRings('data/nevada.geojson', NV_FALLBACK_RINGS),
+    loadGeoJsonRings('data/huc16.geojson', HUC16_FALLBACK_RINGS)
+  ]);
+
+  // Fit viewBox automatically around both layers with a small margin
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const ring of [...nevadaRings, ...huc16Rings]) {
+    for (const pt of ring) {
+      const lon = pt[0], lat = pt[1];
+      if (typeof lon !== 'number' || typeof lat !== 'number') continue;
+      const x = px(lon), y = py(lat);
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+  }
+  const pad = 12;
+  svg.setAttribute(
+    'viewBox',
+    `${(minX - pad).toFixed(1)} ${(minY - pad).toFixed(1)} ${(maxX - minX + pad * 2).toFixed(1)} ${(maxY - minY + pad * 2).toFixed(1)}`
+  );
+
+  const ringToPath = rings => rings.map(ring =>
+    'M ' + ring
+      .filter(pt => Array.isArray(pt) && typeof pt[0] === 'number' && typeof pt[1] === 'number')
+      .map(([lon, lat]) => `${px(lon).toFixed(1)},${py(lat).toFixed(1)}`)
+      .join(' L ') + ' Z'
+  ).join(' ');
 
   // 1. HUC-16 Great Basin Region
   addEl('path', {
@@ -430,9 +458,9 @@ a { color: inherit; text-decoration: none; }
     'stroke-linejoin': 'round'
   });
 
-  // 2. Realistic Nevada State Outline overlaid cleanly on top of the Great Basin
+  // 2. Nevada State Outline from data/nevada.geojson overlaid cleanly on top
   addEl('path', {
-    d: ringToPath([NV_RING]),
+    d: ringToPath(nevadaRings),
     fill: 'rgba(212, 218, 211, 0.45)',
     stroke: '#29302c',
     'stroke-width': '1.9',
