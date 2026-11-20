@@ -518,7 +518,12 @@ fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geo
 const gPeaks = el('g', { class: 'peaks' });
 const markerEls = new Map();
 
-PEAKS.forEach(p => {
+const DRAW_PRIORITY = { u: 0, o: 1, s: 2 };
+const orderedPeaks = PEAKS.slice().sort(
+  (a, b) => (DRAW_PRIORITY[a.st] ?? 0) - (DRAW_PRIORITY[b.st] ?? 0)
+);
+
+orderedPeaks.forEach(p => {
   if (typeof p.lon !== 'number' || typeof p.lat !== 'number' || Number.isNaN(p.lon) || Number.isNaN(p.lat)) return;
   const cx = px(p.lon), cy = py(p.lat);
   const g = el('g', { class: `peak ${CLS[p.st]}`, transform: `translate(${cx.toFixed(1)},${cy.toFixed(1)})` }, gPeaks);
@@ -637,7 +642,11 @@ function renderEmptyPanel() {
 
 function selectPeak(id) {
   selectedId = id;
-  markerEls.forEach((g, pid) => g.classList.toggle('sel', pid === id));
+  markerEls.forEach((g, pid) => {
+    const isSel = pid === id;
+    g.classList.toggle('sel', isSel);
+    if (isSel) gPeaks.appendChild(g);
+  });
   const p = PEAKS.find(item => item.id === id);
   if (!p) { renderEmptyPanel(); return; }
 
