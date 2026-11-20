@@ -333,6 +333,16 @@ a { color: inherit; text-decoration: none; }
   padding: 24px;
 }
 
+.specimen-empty {
+  padding: 44px 16px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
 .specimen-photo-frame {
   background: var(--film-stock);
   padding: 10px 10px 26px;
@@ -475,6 +485,9 @@ a { color: inherit; text-decoration: none; }
       </section>
 
       <aside class="specimen-panel" id="specimenPanel" aria-label="Selected Partner Details">
+        <div class="specimen-empty" id="specimenEmpty">
+          There is always room in the Basin
+        </div>
         <div id="specimenContent" style="display:none;">
           <div class="specimen-photo-frame">
             <img id="specimenImg" src="" alt="">
@@ -556,6 +569,7 @@ const PEOPLE = [
 
   if (countLabel) countLabel.textContent = PEOPLE.length;
 
+  const specimenEmpty = document.getElementById('specimenEmpty');
   const specimenContent = document.getElementById('specimenContent');
   const specimenImg = document.getElementById('specimenImg');
   const specimenName = document.getElementById('specimenName');
@@ -570,6 +584,7 @@ const PEOPLE = [
     field.querySelectorAll('.polaroid-card').forEach(c => c.classList.remove('is-selected'));
     if (cardEl) cardEl.classList.add('is-selected');
 
+    if (specimenEmpty) specimenEmpty.style.display = 'none';
     if (specimenContent) specimenContent.style.display = 'block';
     if (specimenName) specimenName.textContent = person.name;
 
@@ -677,10 +692,6 @@ const PEOPLE = [
   }
 
   renderScatter();
-  if (PEOPLE.length > 0) {
-    const firstCard = field.querySelector('.polaroid-card');
-    selectPerson(PEOPLE[0], firstCard);
-  }
 
   let resizeTimer;
   window.addEventListener('resize', () => {
