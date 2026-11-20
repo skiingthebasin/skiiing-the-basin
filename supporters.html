@@ -29,7 +29,7 @@
   --font-mono: "JetBrains Mono", "Courier New", monospace;
 }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body {
   margin: 0;
@@ -199,7 +199,7 @@ a { color: inherit; text-decoration: none; }
 .ski-panel {
   position: relative;
   flex: 1 1 0%;
-  min-width: 108px;
+  min-width: 116px;
   background: var(--paper);
   border: 1px solid var(--contour-dark);
   display: flex;
@@ -219,10 +219,10 @@ a { color: inherit; text-decoration: none; }
   border-color: var(--ink);
 }
 
-/* Left Column: Tall Ski Side/Top Profile + Bottom Category Label */
+/* Left Column: Folding Front Pair -> Side-On Profile + Bottom Category Label */
 .ski-visual-col {
-  flex: 0 0 124px;
-  width: 124px;
+  flex: 0 0 132px;
+  width: 132px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -234,6 +234,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .ski-img-stage {
+  position: relative;
   flex: 1;
   width: 100%;
   display: flex;
@@ -241,21 +242,93 @@ a { color: inherit; text-decoration: none; }
   justify-content: center;
   padding-bottom: 14px;
   overflow: hidden;
+  perspective: 650px;
 }
 
-.ski-img-stage img {
+/* Front/topsheet pair (01 left, 02 right) */
+.ski-front-pair {
+  position: relative;
+  height: var(--ski-scale, 94%);
+  max-height: 455px;
+  max-width: 104px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1px;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ski-front-half {
+  flex: 1 1 50%;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  transition:
+    transform 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease;
+}
+
+.ski-front-half.is-left {
+  justify-content: flex-end;
+  transform-origin: right center;
+}
+
+.ski-front-half.is-right {
+  justify-content: flex-start;
+  transform-origin: left center;
+}
+
+.ski-front-half img {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(2px 5px 6px rgba(41, 48, 44, 0.2));
+}
+
+/* Side-on profile image revealed on expand */
+.ski-side-img {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
   height: var(--ski-scale, 94%);
   max-height: 455px;
   width: auto;
   max-width: 84px;
   object-fit: contain;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.94);
+  transform-origin: bottom center;
   filter: drop-shadow(3px 6px 8px rgba(41, 48, 44, 0.22));
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 0.32s ease 0.12s,
+    transform 0.44s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+  pointer-events: none;
 }
 
-.ski-panel:hover .ski-img-stage img,
-.ski-panel.is-open .ski-img-stage img {
-  transform: translateY(-4px) scale(1.02);
+/* Fold halves inward and swap to side-on view when expanded */
+.ski-panel:hover .ski-front-half.is-left,
+.ski-panel.is-open .ski-front-half.is-left,
+.ski-panel:focus-within .ski-front-half.is-left {
+  opacity: 0;
+  transform: translateX(18%) scaleX(0.08) rotateY(-42deg);
+}
+
+.ski-panel:hover .ski-front-half.is-right,
+.ski-panel.is-open .ski-front-half.is-right,
+.ski-panel:focus-within .ski-front-half.is-right {
+  opacity: 0;
+  transform: translateX(-18%) scaleX(0.08) rotateY(42deg);
+}
+
+.ski-panel:hover .ski-side-img,
+.ski-panel.is-open .ski-side-img,
+.ski-panel:focus-within .ski-side-img {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px) scale(1.02);
 }
 
 .ski-category-label {
@@ -515,6 +588,16 @@ a { color: inherit; text-decoration: none; }
   margin: 0;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .ski-panel,
+  .ski-front-pair,
+  .ski-front-half,
+  .ski-side-img,
+  .ski-detail-drawer {
+    transition: none;
+  }
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 960px) {
   .quiver-accordion {
@@ -545,13 +628,32 @@ a { color: inherit; text-decoration: none; }
 
   .ski-img-stage {
     flex: 0 0 auto;
-    width: auto;
+    width: 150px;
+    height: 110px;
     padding-bottom: 0;
+    justify-content: flex-start;
   }
 
-  .ski-img-stage img {
-    height: 110px;
+  .ski-front-pair {
+    height: 100%;
+    max-height: none;
+    max-width: 136px;
+  }
+
+  .ski-side-img {
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    max-height: none;
     max-width: none;
+    transform: translateX(0) scale(0.96);
+    transform-origin: left center;
+  }
+
+  .ski-panel:hover .ski-side-img,
+  .ski-panel.is-open .ski-side-img,
+  .ski-panel:focus-within .ski-side-img {
+    transform: translateX(0) scale(1);
   }
 
   .ski-category-label {
@@ -708,6 +810,8 @@ a { color: inherit; text-decoration: none; }
 const MOMENT_QUIVER = [
   {
     id: 'ski_C',
+    frontLeft: 'ski_C_front_01',
+    frontRight: 'ski_C_front_02',
     name: 'Countach Tour 98',
     length: '179 cm',
     category: 'Big Vertical',
@@ -717,6 +821,8 @@ const MOMENT_QUIVER = [
   },
   {
     id: 'ski_DWT',
+    frontLeft: 'ski_DWT_01',
+    frontRight: 'ski_DWT_02',
     name: 'Deathwish Tour 104',
     length: '179 cm',
     category: 'Daily Drivers',
@@ -726,6 +832,8 @@ const MOMENT_QUIVER = [
   },
   {
     id: 'ski_M',
+    frontLeft: 'ski_M_front_01',
+    frontRight: 'ski_M_front_02',
     name: 'Meridian 107',
     length: '182 cm',
     category: 'Mank Tamers',
@@ -735,6 +843,8 @@ const MOMENT_QUIVER = [
   },
   {
     id: 'ski_CB',
+    frontLeft: 'ski_CB_01',
+    frontRight: 'ski_CB_02',
     name: 'Chipotle Banana',
     length: '186 cm',
     category: 'Pow Pow',
@@ -758,7 +868,19 @@ const MOMENT_QUIVER = [
     panel.innerHTML = `
       <div class="ski-visual-col">
         <div class="ski-img-stage">
-          <img src="images/moment/${ski.id}.webp" alt="${ski.name} ski profile">
+          <div class="ski-front-pair" aria-hidden="true">
+            <span class="ski-front-half is-left">
+              <img src="images/moment/${ski.frontLeft}.webp" alt="">
+            </span>
+            <span class="ski-front-half is-right">
+              <img src="images/moment/${ski.frontRight}.webp" alt="">
+            </span>
+          </div>
+          <img
+            class="ski-side-img"
+            src="images/moment/${ski.id}.webp"
+            alt="${ski.name} ski profile"
+          >
         </div>
         <span class="ski-category-label">${ski.category}</span>
       </div>
