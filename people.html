@@ -505,7 +505,7 @@ a { color: inherit; text-decoration: none; }
     <div class="page-header-row">
       <div class="page-intro">
         <h1>The People</h1>
-        <p>Denizens of the Great Basin. I owe it to this growing cadre of folks for keeping the motivational flame lit.</p>
+        <p>Denizens of the Great Basin. I owe it to these folks for keeping the motivational flame lit.</p>
       </div>
       <div class="table-controls">
         <button type="button" class="reshuffle-btn" id="reshuffleBtn">Scatter Again</button>
@@ -522,10 +522,6 @@ a { color: inherit; text-decoration: none; }
       </section>
 
       <aside class="specimen-panel" id="specimenPanel" aria-label="Selected Partner Details">
-        <p class="specimen-kicker">Field Log · Partner Record</p>
-        <div class="specimen-empty" id="specimenEmpty">
-          Click any Polaroid on the table to pull up their portrait, peak count, and every summit skied together.
-        </div>
         <div id="specimenContent" style="display:none;">
           <div class="specimen-photo-frame">
             <img id="specimenImg" src="" alt="">
@@ -534,7 +530,7 @@ a { color: inherit; text-decoration: none; }
             <h2 class="specimen-name" id="specimenName"></h2>
             <span class="specimen-count" id="specimenCount"></span>
           </div>
-          <p class="specimen-peaks-label">Peaks Skied Together</p>
+          <p class="specimen-peaks-label">Project Peaks Skied Together</p>
           <ul class="specimen-peak-list" id="specimenPeakList"></ul>
         </div>
       </aside>
@@ -546,40 +542,59 @@ a { color: inherit; text-decoration: none; }
 // Drop portraits into /images/people/ using the `img` filenames below.
 // Add additional people here as your roster grows.
 const PEOPLE = [
-  { name: 'Will B.', img: 'Boyer_c.jpg', peaks: ['Adam', 'Arc Dome', 'Pearl', 'Augusta', 'Callaghan', 'Tobin', 'Jackson', 'Duffer', 'Trout Creek', 'Moses', 'Lewis', 'Worthington', 'Pilot', 'Troy', 'Bloody Run', 'Currant', 'Kumiva', 'Granite Peak'] },
-  { name: 'Hunter', img: 'DSC06948-768x1024.jpg', peaks: ['Ward', 'Virginia', 'Hamilton', 'Diamond', 'Pilot', 'Troy', 'Bloody Run', 'Kumiva', 'Granite Peak', 'N. Schell'] },
-  { name: 'Johnny', img: 'johnny_c.jpg', peaks: ['Arc Dome', 'Pearl Peak', 'Mt. Rose', 'Virginia Peak', 'Currant Mountain', 'Troy Peak', 'Granite Peak', 'Star Peak', 'Matterhorn'] },
-  { name: 'Andrew', img: 'DSC03575-2-819x1024.jpg', peaks: ['Wheeler Peak', 'Mt. Moriah', 'Grapevine Peak', 'Piper Peak', 'Kumiva Peak', 'Granite Peak', 'Cherry Creek', 'Spruce Mt.', 'Mt. Rose'] },
-  { name: 'Scharff', img: 'WillScharff.jpg', peaks: ['Tule Peak', 'Wheeler Peak', 'Desatoya Twins', 'Star Peak', 'Mt. Siegel', 'Mt. Augusta', 'Pearl Peak', 'Mt. Rose'] },
-  { name: 'Lacey', img: 'lacey_c.jpg', peaks: ['Wheeler Peak', 'Star Peak', 'Hole-in-the-Mountain', 'Mt. Callaghan', 'Mt. Tobin', 'Granite Peak', 'Mt. Rose'] },
-  { name: 'Theresa', img: 'theresa_c.jpg', peaks: ['Arc Dome', 'Pearl Peak', 'Mt. Augusta', 'Hole-in-the-Mountain', 'Mt. Callaghan', 'Mt. Tobin'] },
-  { name: 'Audrey', img: 'DSC01371-2-768x1024.jpg', peaks: ['Mt. Callaghan', 'Mt. Tobin', 'Granite Peak', 'Cherry Creek', 'Spruce Mt.', 'South Pequop'] },
-  { name: 'Freddy', img: 'Freddy.jpg', peaks: ['Arc Dome', 'Mt. Rose', 'Mt. Augusta', 'N. Schell Peak', 'Pearl Peak', 'Mt. Callaghan'] },
-  { name: 'Bentz', img: 'andrew_c.jpg', peaks: ['Hole-in-the-Mountain', 'McAfee Peak', 'Pilot Peak', 'Ward Mt.', 'N. Schell', 'Mt. Jefferson'] },
-  { name: 'Peter', img: 'desatoyajob-69-768x1024.jpg', peaks: ['Job Peak', 'Granite Peak', 'Cherry Creek', 'Spruce Mt.', 'South Pequop'] },
-  { name: 'B-Mo', img: 'brian_c.jpg', peaks: ['Desatoya Twins', 'Mt. Tobin', 'Ward Mountain', 'Eugene Mt.', 'Star Peak'] },
-  { name: 'Natalie', img: 'NatalieT.jpg', peaks: ['Arc Dome', 'Mt. Rose', 'Virginia Peak', 'Granite Peak', 'Star Peak'] },
-  { name: 'Colin', img: 'DSC07623-768x1024.jpg', peaks: ['Eugene Mt.', 'Mt. Hamilton', 'Diamond Peak', 'Tohakum Peak'] },
-  { name: 'Leo', img: 'DSC01276-2-768x1024.jpg', peaks: ['Mt. Callaghan', 'Eugene Mt.', 'Granite Peak', 'Mt. Jefferson'] },
-  { name: 'Lisa', img: 'LisaL.jpg', peaks: ['Arc Dome', 'Mt. Augusta', 'N. Schell'] },
-  { name: 'Zac', img: 'zac_c.jpg', peaks: ['Granite Peak', 'Mt. Rose', 'Ruby Dome'] },
-  { name: 'Lauren', img: 'lauren-768x1024.jpg', peaks: ['Worthington Peak', 'Bloody Run Peak', 'Currant Mountain'] },
-  { name: 'Emma', img: 'moment_skis_eureka-67-768x1024.jpg', peaks: ['Tohakum Peak', 'Kumiva Peak', 'Granite Peak'] },
-  { name: 'Bryant', img: 'Bryant_c.jpg', peaks: ['Sonoma Peak', 'Mt. Augusta', 'Kumiva Peak'] },
-  { name: 'Tessa', img: 'tessa_c.jpg', peaks: ['Wheeler Peak', 'Mt. Tobin'] },
-  { name: 'Dave', img: 'DSC07624-768x1024.jpg', peaks: ['Mt. Hamilton', 'Diamond Peak'] },
-  { name: 'Beau', img: 'DSC07625-768x1024.jpg', peaks: ['Mt. Hamilton', 'Diamond Peak'] },
-  { name: 'Laura', img: 'DSC04131-2-819x1024.jpg', peaks: ['Star Peak', 'Mt. Moriah'] },
-  { name: 'Noelle', img: 'DSC01224-2-768x1024.jpg', peaks: ['Mt. Callaghan', 'Granite Peak'] },
-  { name: 'Simon', img: 'DSC07242-768x1024.jpg', peaks: ['Eugene Mt.', 'Goshute Peak'] },
-  { name: 'Dillon', img: 'DSC05756-819x1024.jpg', peaks: ['Granite Peak', 'Star Peak'] },
-  { name: 'Fraser', img: 'DSC01164-2-768x1024.jpg', peaks: ['Mt. Callaghan', 'Matterhorn'] },
-  { name: 'Max', img: 'DSC04970-768x1024.jpg', peaks: ['Star Peak', 'Mt. Rose'] },
-  { name: 'Joe', img: 'joe-2-768x1024.jpg', peaks: ['Tule Peak', 'Mt. Rose'] },
-  { name: 'Dave (Wheeler)', img: 'dave_c.jpg', peaks: ['Wheeler Peak'] },
-  { name: 'Cody', img: 'cody.jpg', peaks: ['N. Schell Peak'] },
-  { name: 'Clay', img: 'ClayS.jpg', peaks: ['Ward Mountain'] },
-  { name: 'Rain', img: 'DSC05168-768x1024.jpg', peaks: ['Pearl Peak'] }
+  { name: 'Will B.', img: 'boyer.webp', peaks: ['Adam', 'Arc Dome', 'Pearl', 'Augusta', 'Callaghan', 'Tobin', 'Jackson', 'Duffer', 'Trout Creek', 'Moses', 'Lewis', 'Worthington', 'Pilot', 'Troy', 'Bloody Run', 'Currant', 'Kumiva', 'Granite Peak'] },
+  { name: 'Hunter', img: 'hunter.webp', peaks: ['Ward', 'Virginia', 'Hamilton', 'Diamond', 'Pilot', 'Troy', 'Bloody Run', 'Kumiva', 'Granite Peak', 'N. Schell'] },
+  { name: 'Johnny', img: 'johnny.webp', peaks: ['Arc Dome', 'Pearl Peak', 'Mt. Rose', 'Virginia Peak', 'Currant Mountain', 'Troy Peak', 'Granite Peak', 'Star Peak', 'Matterhorn'] },
+  { name: 'Andrew', img: 'andrew.webp', peaks: ['Wheeler Peak', 'Mt. Moriah', 'Grapevine Peak', 'Piper Peak', 'Kumiva Peak', 'Granite Peak', 'Cherry Creek', 'Spruce Mt.', 'Mt. Rose'] },
+  { name: 'Scharff', img: 'scharff.webp', peaks: ['Tule Peak', 'Wheeler Peak', 'Desatoya Twins', 'Star Peak', 'Mt. Siegel', 'Mt. Augusta', 'Pearl Peak', 'Mt. Rose'] },
+  { name: 'Lacey', img: 'lacey.webp', peaks: ['Wheeler Peak', 'Star Peak', 'Hole-in-the-Mountain', 'Mt. Callaghan', 'Mt. Tobin', 'Granite Peak', 'Mt. Rose'] },
+  { name: 'Theresa', img: 'theresa.webp', peaks: ['Arc Dome', 'Pearl Peak', 'Mt. Augusta', 'Hole-in-the-Mountain', 'Mt. Callaghan', 'Mt. Tobin'] },
+  { name: 'Audrey', img: 'audrey.webp', peaks: ['Mt. Callaghan', 'Mt. Tobin', 'Granite Peak', 'Cherry Creek', 'Spruce Mt.', 'South Pequop'] },
+  { name: 'Freddy', img: 'freddy.webp', peaks: ['Arc Dome', 'Mt. Rose', 'Mt. Augusta', 'N. Schell Peak', 'Pearl Peak', 'Mt. Callaghan'] },
+  { name: 'Bentz', img: 'bentz.webp', peaks: ['Hole-in-the-Mountain', 'McAfee Peak', 'Pilot Peak', 'Ward Mt.', 'N. Schell', 'Mt. Jefferson'] },
+  { name: 'Peter', img: 'peter.webp', peaks: ['Job Peak', 'Granite Peak', 'Cherry Creek', 'Spruce Mt.', 'South Pequop'] },
+  { name: 'Brian', img: 'brian.webp', peaks: ['Desatoya Twins', 'Mt. Tobin', 'Ward Mountain', 'Eugene Mt.', 'Star Peak'] },
+  { name: 'Natalie', img: 'natalie.webp', peaks: ['Arc Dome', 'Mt. Rose', 'Virginia Peak', 'Granite Peak', 'Star Peak'] },
+  { name: 'Colin', img: 'colin.webp', peaks: ['Eugene Mt.', 'Mt. Hamilton', 'Diamond Peak', 'Tohakum Peak'] },
+  { name: 'Leo', img: 'leo.webp', peaks: ['Mt. Callaghan', 'Eugene Mt.', 'Granite Peak', 'Mt. Jefferson'] },
+  { name: 'Lisa', img: 'lisa.webp', peaks: ['Arc Dome', 'Mt. Augusta', 'N. Schell'] },
+  { name: 'Zac', img: 'zac.webp', peaks: ['Granite Peak', 'Mt. Rose', 'Ruby Dome'] },
+  { name: 'Lauren', img: 'lauren.webp', peaks: ['Worthington Peak', 'Bloody Run Peak', 'Currant Mountain'] },
+  { name: 'Emma', img: 'emma.webp', peaks: ['Tohakum Peak', 'Kumiva Peak', 'Granite Peak'] },
+  { name: 'Bryant', img: 'bryant.webp', peaks: ['Sonoma Peak', 'Mt. Augusta', 'Kumiva Peak'] },
+  { name: 'Tessa', img: 'tessa.webp', peaks: ['Wheeler Peak', 'Mt. Tobin'] },
+  { name: 'Dave', img: 'dave.webp', peaks: ['Mt. Hamilton', 'Diamond Peak'] },
+  { name: 'Beau', img: 'beau.webp', peaks: ['Mt. Hamilton', 'Diamond Peak'] },
+  { name: 'Laura', img: 'laura.webp', peaks: ['Star Peak', 'Mt. Moriah'] },
+  { name: 'Noelle', img: 'noelle.webp', peaks: ['Mt. Callaghan', 'Granite Peak'] },
+  { name: 'Simon', img: 'simon.webp', peaks: ['Eugene Mt.', 'Goshute Peak'] },
+  { name: 'Dillon', img: 'dillon.webp', peaks: ['Granite Peak', 'Star Peak'] },
+  { name: 'Fraser', img: 'frazer.webp', peaks: ['Mt. Callaghan', 'Matterhorn'] },
+  { name: 'Max', img: 'max.webp', peaks: ['Star Peak', 'Mt. Rose'] },
+  { name: 'Joe', img: 'joe.webp', peaks: ['Tule Peak', 'Mt. Rose'] },
+  { name: 'Dave', img: 'bear.webp', peaks: ['Wheeler Peak'] },
+  { name: 'Cody', img: 'cody.webp', peaks: ['N. Schell Peak'] },
+  { name: 'Clay', img: 'clay.webp', peaks: ['Ward Mountain'] },
+  { name: 'Rain', img: 'rain.webp', peaks: ['Pearl Peak'] },
+  { name: 'Connor', img: 'connor.webp', peaks: ['Mt. Rose'] },
+  { name: 'Jenna', img: 'jenna.webp', peaks: ['Mt. Rose'] },
+  { name: 'Brody', img: 'brody.webp', peaks: ['Pearl Peak'] },
+  { name: 'Megan', img: 'megan.webp', peaks: ['Pearl Peak'] },
+  { name: 'Zach', img: 'zach.webp', peaks: ['Pearl Peak'] },
+  { name: 'Thorn', img: 'thorn.webp', peaks: ['Pearl Peak'] },
+  { name: 'Erin', img: 'erin.webp', peaks: ['Star Peak'] },
+  { name: 'Maggie', img: 'maggie.webp', peaks: ['Granite Peak'] },
+  { name: 'Sophie', img: 'sophie.webp', peaks: ['Star Peak'] },
+  { name: 'Ryan', img: 'ryan.webp', peaks: ['Mount Moriah'] },
+  { name: 'Blake', img: 'blake.webp', peaks: ['Star Peak'] },
+  { name: 'Marshall', img: 'marshall.webp', peaks: ['Star Peak'] },
+  { name: 'Peters', img: 'peters.webp', peaks: ['Bloody Run Peak'] },
+  { name: 'Aaron', img: 'aaron.webp', peaks: ['McAfee Peak'] },
+  { name: 'Andy', img: 'andy.webp', peaks: ['Mt. Hamilton'] },
+  { name: 'Taka', img: 'taka.webp', peaks: ['Arc Dome'] },
+  { name: 'Addie', img: 'addie.webp', peaks: ['Mt. Callaghan'] },
+  { name: 'Luke', img: 'luke.webp', peaks: ['Arc Dome'] }
+  
 ];
 
 (function initPolaroidTable() {
