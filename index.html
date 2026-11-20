@@ -132,6 +132,70 @@ a { color: inherit; text-decoration: none; }
   filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));
 }
 
+/* Dispatch Bar Directly Beneath Banner */
+.banner-actions-bar {
+  border-bottom: 1px solid var(--contour);
+  background: var(--paper-deep);
+}
+.banner-actions-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.banner-actions-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+.banner-btn-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.dispatch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 10px 16px;
+  border: 1px solid var(--contour-dark);
+  background: var(--paper);
+  color: var(--ink);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.dispatch-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+.dispatch-btn--accent {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+.dispatch-btn--accent:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.dispatch-arrow {
+  font-size: 13px;
+  line-height: 1;
+}
+
 /* Content Container */
 .content-container {
   max-width: 1040px;
@@ -198,34 +262,6 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.02em;
 }
 
-/* Video Section */
-.video-section {
-  max-width: 800px;
-  margin: 0 auto 60px;
-}
-.video-section h2 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin: 0 0 16px;
-}
-.video-wrapper {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  background: var(--paper-deep);
-  border: 1.5px solid var(--contour-dark);
-}
-.video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
 /* Acknowledgements Box */
 .acknowledgements-box {
   max-width: 800px;
@@ -272,6 +308,7 @@ a { color: inherit; text-decoration: none; }
   .nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
   .nav a { padding: 7px 10px; font-size: 11px; }
   .hero-bg { justify-content: center; padding: 40px 20px; min-height: 360px; }
+  .banner-actions-inner { padding: 14px 20px; }
   .content-container { padding: 40px 20px; }
   .acknowledgements-box { padding: 24px 20px; }
 }
@@ -302,6 +339,25 @@ a { color: inherit; text-decoration: none; }
     </div>
   </div>
 
+  <!-- Quick Links Right Beneath Banner -->
+  <div class="banner-actions-bar" aria-label="Latest Dispatches">
+    <div class="banner-actions-inner">
+      <span class="banner-actions-label">Fresh Field Dispatches</span>
+      <div class="banner-btn-group">
+        <!-- Replace href with your latest video link -->
+        <a class="dispatch-btn dispatch-btn--accent" href="https://youtu.be/TYuOApqakJY" target="_blank" rel="noopener noreferrer">
+          <span>Latest Video</span>
+          <span class="dispatch-arrow" aria-hidden="true">&#8599;</span>
+        </a>
+        <!-- Replace href with your latest trip report URL -->
+        <a class="dispatch-btn" href="#trip-report-link" target="_blank" rel="noopener noreferrer">
+          <span>Latest Trip Report</span>
+          <span class="dispatch-arrow" aria-hidden="true">&#8599;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <main class="content-container">
     <div class="intro-grid">
       <!-- Left: Project Text Content -->
@@ -325,14 +381,6 @@ a { color: inherit; text-decoration: none; }
       <!-- Right: Clean Floating Non-Interactive Great Basin + Nevada + Peaks Graphic -->
       <div class="floating-map" aria-hidden="true">
         <svg id="basinOverviewSvg" class="basin-svg" preserveAspectRatio="xMidYMid meet"></svg>
-      </div>
-    </div>
-
-    <!-- Latest Video Section -->
-    <div class="video-section">
-      <h2>Latest Video</h2>
-      <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed/TYuOApqakJY?si=6FdvmYz3Yh-Dnk_P" title="Latest Video" allowfullscreen></iframe>
       </div>
     </div>
 
