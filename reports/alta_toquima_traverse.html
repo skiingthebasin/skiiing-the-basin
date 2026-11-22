@@ -1,1 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Keep hidden from search engines while building; remove when launching Trip Reports -->
+<meta name="robots" content="noindex, nofollow">
+<title>Alta Toquima Traverse · Skiing the Basin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Sage Gray-Green Great Basin Palette */
+  --paper: #e3e7e2;
+  --paper-deep: #d4dad3;
+  --ink: #29302c;
+  --ink-soft: #48524c;
+  --contour: #95a399;
+  --contour-dark: #5c6b61;
+  --accent: #8c3b32;
+  --accent-soft: #a86259;
+  --water: #9ab0b8;
 
+  /* Peak Marker Colors */
+  --rabbitbrush: #d49b27;
+  --sand: #c2b28f;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse at top left, rgba(0,0,0,0.015), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(0,0,0,0.025), transparent 60%),
+    var(--paper);
+}
+
+/* Header */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 32px;
+  border-bottom: 1.5px solid var(--contour-dark);
+  background: var(--paper);
+  position: relative;
+  z-index: 10;
+}
+.hdr-left { display: flex; align-items: center; gap: 24px; }
+
+.counter {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--contour-dark);
+  background: var(--paper-deep);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.counter:hover {
+  border-color: var(--ink);
+  background: #dce2da;
+}
+.counter-num { font-size: 20px; font-weight: 700; color: var(--rabbitbrush); text-shadow: 0 0 1px rgba(41,48,44,0.4); }
+.counter-div { color: var(--contour); }
+.counter-total { font-size: 16px; font-weight: 600; color: var(--ink); }
+.counter-label { margin-left: 6px; color: var(--ink-soft); font-size: 10px; }
+
+.nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 14px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--ink); border-color: var(--contour); }
+.nav a.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Back Bar */
+.report-subbar {
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-soft);
+  padding: 6px 12px;
+  border: 1px solid var(--contour);
+  background: var(--paper-deep);
+  transition: all 0.15s ease;
+}
+
+.back-link:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+  background: #ebeae4;
+}
+
+/* =========================================================
+   HERO HEADER (Exposure-style Cover Banner)
+   ========================================================= */
+.report-hero {
+  max-width: 1140px;
+  width: 100%;
+  margin: 24px auto 0;
+  padding: 0 32px;
+}
+
+.hero-frame {
+  position: relative;
+  width: 100%;
+  min-height: 460px;
+  max-height: 640px;
+  aspect-ratio: 16 / 9;
+  background: #1f2522;
+  border: 1.5px solid var(--contour-dark);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(24, 29, 26, 0.88) 0%,
+    rgba(24, 29, 26, 0.42) 48%,
+    rgba(24, 29, 26, 0.08) 100%
+  );
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 40px 44px;
+  color: var(--paper);
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--rabbitbrush);
+  margin-bottom: 12px;
+}
+
+.hero-meta span + span::before {
+  content: "·";
+  margin-right: 10px;
+  color: rgba(227, 231, 226, 0.55);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4.6vw, 54px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  max-width: 820px;
+  color: #f4f6f3;
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.55;
+  color: rgba(235, 239, 234, 0.88);
+  margin: 0;
+  max-width: 660px;
+}
+
+/* =========================================================
+   STORY STREAM & MODULAR BLOCK SYSTEM
+   ========================================================= */
+.story-stream {
+  width: 100%;
+  padding: 56px 0 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+/* Width Tiers for Visual Rhythm */
+.block-prose {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.block-medium {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.block-wide {
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* BLOCK 1: Prose & Subheadings */
+.prose-heading {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+  margin: 8px 0 16px;
+}
+
+.prose-kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.block-prose p {
+  font-size: 17px;
+  line-height: 1.78;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+
+.block-prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* Lead drop cap option (add class="has-dropcap" to first prose block) */
+.block-prose.has-dropcap > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 54px;
+  line-height: 0.86;
+  padding-right: 12px;
+  padding-top: 4px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* BLOCKS 2, 3, 4, 5: Photo Figures & Grids */
+.photo-figure {
+  margin: 0;
+}
+
+.photo-frame {
+  background: var(--paper-deep);
+  border: 1px solid var(--contour-dark);
+  overflow: hidden;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.photo-caption {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  padding-left: 10px;
+  border-left: 2px solid var(--contour-dark);
+}
+
+/* 2-Up Photo Diptych */
+.photo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* 3-Up Photo Strip */
+.photo-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+/* Equal-height crop helper for paired/trio grids (add class="is-cropped" on .photo-grid-2 or .photo-grid-3) */
+.photo-grid-2.is-cropped .photo-frame,
+.photo-grid-3.is-cropped .photo-frame {
+  aspect-ratio: 4 / 3;
+}
+
+.photo-grid-2.is-cropped .photo-frame img,
+.photo-grid-3.is-cropped .photo-frame img {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* BLOCK 6: Pull Quote / Journal Excerpt */
+.pull-quote {
+  margin: 8px 0;
+  padding: 26px 30px;
+  background: var(--paper-deep);
+  border: 1px solid var(--contour);
+  border-left: 4px solid var(--accent);
+}
+
+.pull-quote blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 23px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.pull-quote cite {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+
+/* BLOCK 7: Looping Video Clip */
+.video-frame {
+  position: relative;
+  width: 100%;
+  background: #181c1a;
+  border: 1.5px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--contour-dark);
+  overflow: hidden;
+}
+
+.video-frame video {
+  width: 100%;
+  height: auto;
+  max-height: 76vh;
+  object-fit: cover;
+  display: block;
+}
+
+/* BLOCK 8: Route & Field Stats Box */
+.trip-stats-card {
+  background: var(--paper-deep);
+  border: 1.5px solid var(--contour-dark);
+  padding: 24px 28px;
+}
+
+.trip-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--contour);
+}
+
+.trip-stats-title {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.trip-stats-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.trip-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-cell {
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--contour);
+}
+
+.stat-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Report Footer Navigation */
+.report-footer {
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 24px 0;
+  border-top: 1.5px solid var(--contour-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 820px) {
+  .counter-label { display: none; }
+  .hdr { padding: 14px 20px; flex-direction: column; align-items: stretch; gap: 10px; }
+  .hdr-left { justify-content: space-between; }
+  .nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  .nav a { padding: 7px 10px; font-size: 11px; }
+
+  .report-subbar { padding: 16px 20px 0; }
+  .report-hero { padding: 0 20px; margin-top: 16px; }
+  .hero-frame { min-height: 360px; aspect-ratio: 4 / 3; }
+  .hero-overlay { padding: 26px 22px; }
+
+  .story-stream { padding: 38px 0 64px; gap: 34px; }
+  .block-wide { padding: 0 20px; }
+  .block-medium, .block-prose { padding: 0 20px; }
+  .block-prose p { font-size: 16px; }
+  .prose-heading { font-size: 24px; }
+  .pull-quote { padding: 20px 22px; }
+  .pull-quote blockquote { font-size: 20px; }
+
+  .trip-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .photo-grid-2,
+  .photo-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+</style>
+<script data-goatcounter="https://skiingthebasin.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-left">
+      <a class="counter" href="../peaks.html" aria-label="Skied project peaks progress">
+        <span class="counter-num" id="cNum">–</span><span class="counter-div">/</span><span class="counter-total" id="cTot">64</span>
+        <span class="counter-label">skied project peaks</span>
+      </a>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">The Project</a>
+      <a href="../peaks.html">The Peaks</a>
+      <a href="../people.html">The People</a>
+      <a href="../supporters.html">Supporters</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="report-subbar">
+    <a class="back-link" href="../reports.html">&#8592; All Trip Reports</a>
+  </div>
+
+  <!-- =========================================================
+       HERO COVER SECTION
+       Swap image path, mountain range, date, title, and dek
+       ========================================================= -->
+  <header class="report-hero">
+    <div class="hero-frame">
+      <img src="../images/reports/SAMPLE-FOLDER/hero.webp" alt="Wide alpine view of the route">
+      <div class="hero-overlay">
+        <div class="hero-meta">
+          <span>Toquima Range, NV</span>
+          <span>May 4, 2026</span>
+        </div>
+        <h1 class="hero-title">Alta Toquima Traverse</h1>
+        <p class="hero-subtitle">Linking Mt. Jefferson's Summits</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       STORY STREAM: Copy, paste, and reorder any blocks below
+       ========================================================= -->
+  <main class="story-stream">
+
+    <!-- [BLOCK 1: NARRATIVE PROSE] (Add "has-dropcap" on the opening section) -->
+    <section class="block-prose has-dropcap">
+      <span class="prose-kicker">Part I · Approach</span>
+      <h2 class="prose-heading">Leaving the Sagebrush Behind</h2>
+      <p>Something interesting happens when a stingy winter rolls around. The baseline for chase-worthy storms drops considerably, and typically outrageous plans suddenly seem like a pretty good idea.</p>
+      <p>I had been eyeing an incoming mid-April refresh, hoping it would align with the weekend. Alas, the storm slowed and it became evident that Tuesday would be the day to score the best conditions. Leo was down to join, and Andrew gave the thumbs up as well, still riding the high of our successful tour in the Copper Mountains a couple weekends prior.</p>
+      <p>Leo and I departed Reno Monday night, the miles and hours buzzed by in a strange post-work disequilibrium. I had keyed in on an unskied project peak, Mt. Jefferson (high point of the Toquima Range), which had supposedly picked up a foot+ of fresh powder. Andrew had left Salt Lake City a day earlier and had sent promising photos, his truck parked in fluffy snow at the Love's gas station in Ely.</p>
+      <p>I was eager to see what lay in store for us, especially since OpenSnow wasn't predicting any snow on the ground in the Toquimas. The whole plan hinged on a single promising pre-storm satellite image. The die had been cast.</p>
+    </section>
+
+    <!-- [BLOCK 8: TRIP & ROUTE STATS CARD] (Great near the top or end of a report) -->
+    <section class="block-medium">
+      <div class="trip-stats-card">
+        <div class="trip-stats-header">
+          <h3 class="trip-stats-title">Field Log &amp; Route Metrics</h3>
+          <span class="trip-stats-tag">Great Basin Project</span>
+        </div>
+        <div class="trip-stats-grid">
+          <div class="stat-cell">
+            <span class="stat-label">Distance</span>
+            <span class="stat-value">28.4 mi</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-label">Vertical Gain</span>
+            <span class="stat-value">11,200 ft</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-label">High Point</span>
+            <span class="stat-value">11,941 ft</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-label">Skis</span>
+            <span class="stat-value">Deathwish Tour</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [BLOCK 2: STANDARD SINGLE PHOTO] (Medium width, ideal for vertical or 4:3 shots) -->
+    <section class="block-medium">
+      <figure class="photo-figure">
+        <div class="photo-frame">
+          <img src="../images/reports/SAMPLE-FOLDER/01.webp" alt="Describe what is happening in the photo" loading="lazy">
+        </div>
+        <figcaption class="photo-caption">Optional field caption: morning light hitting the east cirque before the wind picked up.</figcaption>
+      </figure>
+    </section>
+
+    <!-- [BLOCK 1: NARRATIVE PROSE] (Standard continuation without dropcap or heading) -->
+    <section class="block-prose">
+      <p>Continue the story after the photo. You can omit the kicker and heading whenever you are just continuing the same chapter of the trip.</p>
+    </section>
+
+    <!-- [BLOCK 3: WIDE / PANORAMA PHOTO] (Full container width for big mountain landscapes) -->
+    <section class="block-wide">
+      <figure class="photo-figure">
+        <div class="photo-frame">
+          <img src="../images/reports/SAMPLE-FOLDER/02.webp" alt="Panoramic ridge view" loading="lazy">
+        </div>
+        <figcaption class="photo-caption">Looking south down the crest toward the basin floor 6,000 feet below.</figcaption>
+      </figure>
+    </section>
+
+    <!-- [BLOCK 6: PULL QUOTE / JOURNAL NOTE] -->
+    <section class="block-prose">
+      <div class="pull-quote">
+        <blockquote>“Out here, every ridge looks like an island floating above an ocean of gray-green sage.”</blockquote>
+        <cite>Field Notebook · Camp Two, 10,400 ft</cite>
+      </div>
+    </section>
+
+    <!-- [BLOCK 4: SIDE-BY-SIDE PHOTO DIPTYCH] (Remove "is-cropped" if both photos already share an aspect ratio) -->
+    <section class="block-wide">
+      <figure class="photo-figure">
+        <div class="photo-grid-2 is-cropped">
+          <div class="photo-frame">
+            <img src="../images/reports/SAMPLE-FOLDER/03.webp" alt="Left photo description" loading="lazy">
+          </div>
+          <div class="photo-frame">
+            <img src="../images/reports/SAMPLE-FOLDER/04.webp" alt="Right photo description" loading="lazy">
+          </div>
+        </div>
+        <figcaption class="photo-caption">Left: Bootpacking the wind-scoured headwall. Right: Corn snow on the exit apron.</figcaption>
+      </figure>
+    </section>
+
+    <!-- [BLOCK 5: 3-PHOTO STRIP] -->
+    <section class="block-wide">
+      <figure class="photo-figure">
+        <div class="photo-grid-3 is-cropped">
+          <div class="photo-frame">
+            <img src="../images/reports/SAMPLE-FOLDER/05.webp" alt="First detail photo" loading="lazy">
+          </div>
+          <div class="photo-frame">
+            <img src="../images/reports/SAMPLE-FOLDER/06.webp" alt="Second detail photo" loading="lazy">
+          </div>
+          <div class="photo-frame">
+            <img src="../images/reports/SAMPLE-FOLDER/07.webp" alt="Third detail photo" loading="lazy">
+          </div>
+        </div>
+        <figcaption class="photo-caption">Three frames from the descent back to the truck.</figcaption>
+      </figure>
+    </section>
+
+    <!-- Bottom Return Link -->
+    <footer class="report-footer">
+      <a class="back-link" href="../reports.html">&#8592; Back to Trip Reports</a>
+      <a class="back-link" href="../peaks.html">Explore the 64 Peaks &#8594;</a>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+// Auto-play/pause looping clips as they enter and leave the viewport
+(function initStoryVideos() {
+  const videos = document.querySelectorAll('.video-frame video');
+  if (!videos.length || !('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const vid = entry.target;
+      if (entry.isIntersecting) {
+        vid.play().catch(() => {});
+      } else if (!vid.paused) {
+        vid.pause();
+      }
+    });
+  }, { threshold: 0.35 });
+
+  videos.forEach(v => observer.observe(v));
+})();
+
+// Sync Skied Project Peaks Counter with ../peaks.html
+(async function syncPeakCounter() {
+  try {
+    const res = await fetch('../peaks.html', { cache: 'no-store' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const match = text.match(/const\s+RAW\s*=\s*(\[[\s\S]*?\n\]);/);
+    if (!match) return;
+    const rawRows = Function(`"use strict"; return (${match[1]});`)();
+    const normalized = rawRows.map(r => r[2] || 'u');
+    const nS = normalized.filter(st => st === 's').length;
+    const nU = normalized.filter(st => st === 'u').length;
+    document.getElementById('cNum').textContent = nS;
+    document.getElementById('cTot').textContent = nS + nU;
+  } catch {
+    // Graceful fallback when opened locally over file://
+  }
+})();
+</script>
+</body>
+</html>
