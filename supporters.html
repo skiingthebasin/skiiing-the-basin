@@ -245,13 +245,13 @@ a { color: inherit; text-decoration: none; }
   perspective: 650px;
 }
 
-/* Front/topsheet pair (01 left, 02 right) */
+/* Front/topsheet pair (01 left, 02 right) — matched height to side profile */
 .ski-front-pair {
   position: relative;
   height: var(--ski-scale, 94%);
   max-height: 455px;
-  max-width: 104px;
-  width: 100%;
+  max-width: 112px;
+  width: auto;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -260,8 +260,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .ski-front-half {
-  flex: 1 1 50%;
-  min-width: 0;
+  flex: 0 1 auto;
   height: 100%;
   display: flex;
   align-items: flex-end;
@@ -283,13 +282,13 @@ a { color: inherit; text-decoration: none; }
 .ski-front-half img {
   height: 100%;
   width: auto;
-  max-width: 100%;
+  max-width: 55px;
   object-fit: contain;
   display: block;
   filter: drop-shadow(2px 5px 6px rgba(41, 48, 44, 0.2));
 }
 
-/* Side-on profile image revealed on expand */
+/* Side-on profile image revealed on expand — matched height & baseline */
 .ski-side-img {
   position: absolute;
   bottom: 14px;
@@ -297,10 +296,10 @@ a { color: inherit; text-decoration: none; }
   height: var(--ski-scale, 94%);
   max-height: 455px;
   width: auto;
-  max-width: 84px;
+  max-width: 96px;
   object-fit: contain;
   opacity: 0;
-  transform: translateX(-50%) scale(0.94);
+  transform: translateX(-50%) scale(1);
   transform-origin: bottom center;
   filter: drop-shadow(3px 6px 8px rgba(41, 48, 44, 0.22));
   transition:
@@ -328,7 +327,7 @@ a { color: inherit; text-decoration: none; }
 .ski-panel.is-open .ski-side-img,
 .ski-panel:focus-within .ski-side-img {
   opacity: 1;
-  transform: translateX(-50%) translateY(-4px) scale(1.02);
+  transform: translateX(-50%) scale(1);
 }
 
 .ski-category-label {
@@ -598,7 +597,7 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* Responsive Breakpoints */
+/* Responsive Breakpoints: Horizontal Skis on Mobile */
 @media (max-width: 960px) {
   .quiver-accordion {
     flex-direction: column;
@@ -623,44 +622,81 @@ a { color: inherit; text-decoration: none; }
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 20px;
+    gap: 14px;
+    padding: 14px 18px;
   }
 
   .ski-img-stage {
-    flex: 0 0 auto;
-    width: 150px;
-    height: 110px;
+    flex: 1 1 auto;
+    width: auto;
+    height: 112px;
     padding-bottom: 0;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: center;
+    perspective: none;
   }
 
+  /* Rotate vertical ski length into horizontal span on mobile */
   .ski-front-pair {
-    height: 100%;
+    position: relative;
+    height: 92px;
     max-height: none;
-    max-width: 136px;
+    max-width: none;
+    width: auto;
+    align-items: center;
+    transform: rotate(-90deg);
+    transform-origin: center center;
+  }
+
+  .ski-front-half {
+    height: 100%;
+    align-items: center;
+  }
+
+  .ski-front-half img {
+    height: 100%;
+    max-width: 44px;
   }
 
   .ski-side-img {
-    bottom: 0;
-    left: 0;
-    height: 100%;
+    bottom: auto;
+    top: 50%;
+    left: 50%;
+    height: 92px;
     max-height: none;
     max-width: none;
-    transform: translateX(0) scale(0.96);
-    transform-origin: left center;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center center;
+  }
+
+  .ski-panel:hover .ski-front-half.is-left,
+  .ski-panel.is-open .ski-front-half.is-left,
+  .ski-panel:focus-within .ski-front-half.is-left {
+    opacity: 0;
+    transform: translateY(14%) scaleY(0.12);
+  }
+
+  .ski-panel:hover .ski-front-half.is-right,
+  .ski-panel.is-open .ski-front-half.is-right,
+  .ski-panel:focus-within .ski-front-half.is-right {
+    opacity: 0;
+    transform: translateY(-14%) scaleY(0.12);
   }
 
   .ski-panel:hover .ski-side-img,
   .ski-panel.is-open .ski-side-img,
   .ski-panel:focus-within .ski-side-img {
-    transform: translateX(0) scale(1);
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-90deg);
   }
 
   .ski-category-label {
+    flex: 0 0 auto;
     width: auto;
     border-top: none;
     padding-top: 0;
-    font-size: 12px;
+    font-size: 11.5px;
+    text-align: right;
   }
 
   .ski-detail-drawer {
@@ -728,7 +764,7 @@ a { color: inherit; text-decoration: none; }
   <main class="content-container">
     <div class="page-intro">
       <h1>Supporters</h1>
-      <p>Skiing across the Great Basin takes reliable tools and people who believe in the mission. I am thankful to these folks for helping keep the project moving.</p>
+      <p>Great Basin skiing requires reliable tools and people who share the vision. I am thankful to have these folks along for the ride.</p>
     </div>
 
     <!-- Moment Skis Quiver Showcase -->
@@ -829,7 +865,7 @@ const MOMENT_QUIVER = [
     length: '179 cm',
     category: 'Daily Drivers',
     waist: '104 mm',
-    role: 'The closest thing out there to a one-ski quiver',
+    role: 'When the snow is consistently inconsistent',
     scalePct: '90%'
   },
   {
@@ -840,7 +876,7 @@ const MOMENT_QUIVER = [
     length: '182 cm',
     category: 'Mank Tamers',
     waist: '107 mm',
-    role: 'When the snow is consistently inconsistent',
+    role: 'The only thing less hooky are Truckee River trout.',
     scalePct: '93%'
   },
   {
