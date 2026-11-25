@@ -16,8 +16,8 @@
   --ink-soft: #48524c;
   --contour: #95a399;
   --contour-dark: #5c6b61;
-  --accent: #8c3b32;
-  --accent-soft: #a86259;
+  --accent: #d49b27;
+  --accent-soft: #b58018;
   --water: #9ab0b8;
 
   /* Peak Marker Colors */
@@ -147,12 +147,9 @@ a { color: inherit; text-decoration: none; }
   margin: 0;
 }
 
-/* Split Workspace: Scattered Tabletop + Specimen Detail Panel */
+/* Full-Width Scattered Tabletop */
 .people-workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 28px;
-  align-items: start;
+  display: block;
 }
 
 /* Scattered Polaroid Sidetable on Macro Rock Texture */
@@ -164,7 +161,7 @@ a { color: inherit; text-decoration: none; }
     url('images/texture.webp') center / cover no-repeat,
     var(--paper-deep);
   border: 1.5px solid var(--contour-dark);
-  overflow: hidden;
+  overflow: visible;
   padding: 24px;
 }
 
@@ -225,9 +222,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 .polaroid-card.is-selected {
-  z-index: 45 !important;
+  z-index: 80 !important;
+  transform: translate(var(--jx, 0px), calc(var(--jy, 0px) - 6px)) rotate(0deg) scale(1.08);
   border-color: var(--accent);
-  box-shadow: 0 14px 26px rgba(140, 59, 50, 0.26), 0 0 0 2px var(--accent);
+  box-shadow: 0 18px 34px rgba(41, 48, 44, 0.36), 0 0 0 2px var(--accent);
 }
 
 .polaroid-photo-wrap {
@@ -300,7 +298,7 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-mono);
   font-size: 9.5px;
   font-weight: 700;
-  color: var(--paper);
+  color: var(--ink);
   background: var(--accent);
   padding: 1px 5px;
   border-radius: 2px;
@@ -324,120 +322,117 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(0);
 }
 
-/* Sticky Specimen Side Panel */
-.specimen-panel {
-  position: sticky;
-  top: 28px;
-  background: var(--paper-deep);
-  border: 1.5px solid var(--contour-dark);
-  padding: 24px;
+/* Floating Slide-Out Peak Drawer Next to Selected Polaroid */
+.polaroid-drawer {
+  position: absolute;
+  z-index: 85;
+  width: 248px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow: 0 18px 38px rgba(41, 48, 44, 0.32), 4px 4px 0 var(--contour-dark);
+  padding: 14px 16px 16px;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateX(-10px) scale(0.97);
+  transition: opacity 0.22s ease, transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-.specimen-empty {
-  padding: 44px 16px;
-  text-align: center;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 20px;
-  line-height: 1.45;
-  color: var(--ink-soft);
+.polaroid-drawer.open-left {
+  transform: translateX(10px) scale(0.97);
 }
-
-.specimen-photo-frame {
-  background: var(--film-stock);
-  padding: 10px 10px 26px;
-  border: 1px solid rgba(41, 48, 44, 0.2);
-  box-shadow: 0 10px 20px rgba(41, 48, 44, 0.16);
-  margin-bottom: 18px;
+.polaroid-drawer.is-visible {
+  opacity: 1;
+  transform: translateX(0) scale(1);
 }
-
-.specimen-photo-frame img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  object-position: center 20%;
-  display: block;
-  filter: contrast(1.06) brightness(1.02) saturate(0.88) sepia(0.1);
+.drawer-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
 }
-
-.specimen-header {
+.drawer-title-wrap {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
 }
-
-.specimen-name {
+.drawer-name {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.1;
   margin: 0;
   color: var(--ink);
 }
-
-.specimen-count {
+.drawer-count {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--paper);
-  background: var(--accent);
-  padding: 4px 8px;
+  color: var(--ink);
+  background: var(--rabbitbrush);
+  padding: 2px 6px;
   white-space: nowrap;
 }
-
-.specimen-peaks-label {
+.drawer-close {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: 1px solid var(--contour-dark);
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.14s ease;
+}
+.drawer-close:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.drawer-label {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-soft);
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
-
-.specimen-peak-list {
+.drawer-peak-list {
   list-style: none;
   padding: 0;
   margin: 0;
   border-top: 1px solid var(--contour);
-  max-height: 280px;
+  max-height: 210px;
   overflow-y: auto;
 }
-
-.specimen-peak-list li {
+.drawer-peak-list li {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--ink);
-  padding: 6px 2px;
-  border-bottom: 1px solid var(--contour);
+  padding: 5px 2px;
+  border-bottom: 1px dashed var(--contour);
   display: flex;
   align-items: center;
-  justify-content: flex-start;
 }
-
-.specimen-peak-list li::before {
+.drawer-peak-list li:last-child { border-bottom: none; }
+.drawer-peak-list li::before {
   content: "▲";
-  font-size: 8px;
+  font-size: 7.5px;
   color: var(--rabbitbrush);
-  margin-right: 8px;
+  margin-right: 7px;
+  flex: 0 0 auto;
 }
 
 /* Responsive Breakpoints */
-@media (max-width: 1020px) {
-  .people-workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .specimen-panel {
-    position: static;
-  }
-}
-
 @media (max-width: 820px) {
   .counter-label { display: none; }
   .hdr { padding: 14px 20px; flex-direction: column; align-items: stretch; gap: 10px; }
@@ -447,6 +442,7 @@ a { color: inherit; text-decoration: none; }
   .content-container { padding: 36px 20px 64px; }
   .polaroid-table { padding: 16px; }
   .polaroid-card { width: 126px; padding: 6px 6px 20px; }
+  .polaroid-drawer { width: 210px; padding: 12px; }
 }
 </style>
 </head>
@@ -482,26 +478,10 @@ a { color: inherit; text-decoration: none; }
       <section class="polaroid-table" aria-label="Scattered Polaroids of Tour Partners">
         <div class="table-caption-bar">
           <span>Denizens of the Great Basin · <span id="peopleCountLabel">0</span> Partners</span>
+          <span>Click any print to view peaks</span>
         </div>
         <div class="polaroid-field" id="polaroidField"></div>
       </section>
-
-      <aside class="specimen-panel" id="specimenPanel" aria-label="Selected Partner Details">
-        <div class="specimen-empty" id="specimenEmpty">
-          There is always room in the Basin
-        </div>
-        <div id="specimenContent" style="display:none;">
-          <div class="specimen-photo-frame">
-            <img id="specimenImg" src="" alt="">
-          </div>
-          <div class="specimen-header">
-            <h2 class="specimen-name" id="specimenName"></h2>
-            <span class="specimen-count" id="specimenCount"></span>
-          </div>
-          <p class="specimen-peaks-label">Project Peaks Skied Together</p>
-          <ul class="specimen-peak-list" id="specimenPeakList"></ul>
-        </div>
-      </aside>
     </div>
   </main>
 </div>
@@ -571,45 +551,86 @@ const PEOPLE = [
 
   if (countLabel) countLabel.textContent = PEOPLE.length;
 
-  const specimenEmpty = document.getElementById('specimenEmpty');
-  const specimenContent = document.getElementById('specimenContent');
-  const specimenImg = document.getElementById('specimenImg');
-  const specimenName = document.getElementById('specimenName');
-  const specimenCount = document.getElementById('specimenCount');
-  const specimenPeakList = document.getElementById('specimenPeakList');
-
   const randRange = (min, max) => Math.random() * (max - min) + min;
+  let activeDrawer = null;
+  let selectedIdx = null;
 
-  function selectPerson(person, cardEl) {
-    if (!person) return;
+  function closeDrawer() {
+    if (activeDrawer) {
+      activeDrawer.remove();
+      activeDrawer = null;
+    }
+    selectedIdx = null;
+    field.querySelectorAll('.polaroid-card.is-selected').forEach(c => c.classList.remove('is-selected'));
+  }
 
-    field.querySelectorAll('.polaroid-card').forEach(c => c.classList.remove('is-selected'));
-    if (cardEl) cardEl.classList.add('is-selected');
+  function selectPerson(person, cardEl, idx) {
+    if (!person || !cardEl) return;
 
-    if (specimenEmpty) specimenEmpty.style.display = 'none';
-    if (specimenContent) specimenContent.style.display = 'block';
-    if (specimenName) specimenName.textContent = person.name;
+    // Clicking the already-open Polaroid closes its slide-out drawer
+    if (selectedIdx === idx && activeDrawer) {
+      closeDrawer();
+      return;
+    }
+
+    closeDrawer();
+    selectedIdx = idx;
+    cardEl.classList.add('is-selected');
+
+    const drawer = document.createElement('div');
+    drawer.className = 'polaroid-drawer';
+    drawer.setAttribute('role', 'dialog');
+    drawer.setAttribute('aria-label', `${person.name} peaks skied together`);
 
     const n = person.peaks.length;
-    if (specimenCount) {
-      specimenCount.textContent = `${n} ${n === 1 ? 'Peak' : 'Peaks'}`;
+    const peakLabel = `${n} ${n === 1 ? 'Peak' : 'Peaks'}`;
+    drawer.innerHTML = `
+      <div class="drawer-top">
+        <div class="drawer-title-wrap">
+          <h2 class="drawer-name">${person.name}</h2>
+          <span class="drawer-count">${peakLabel}</span>
+        </div>
+        <button class="drawer-close" type="button" aria-label="Close peak list">×</button>
+      </div>
+      <p class="drawer-label">Project Peaks Skied Together</p>
+      <ul class="drawer-peak-list">${person.peaks.map(pk => `<li>${pk}</li>`).join('')}</ul>
+    `;
+
+    drawer.addEventListener('click', e => e.stopPropagation());
+    drawer.querySelector('.drawer-close').addEventListener('click', closeDrawer);
+
+    field.appendChild(drawer);
+    activeDrawer = drawer;
+
+    // Position flush next to the selected Polaroid (to the right if room, otherwise to the left)
+    const fieldW = field.clientWidth || 820;
+    const cardLeft = cardEl.offsetLeft;
+    const cardTop = cardEl.offsetTop;
+    const cardW = cardEl.offsetWidth;
+    const drawerW = drawer.offsetWidth || 248;
+    const gap = 10;
+
+    let leftPos = cardLeft + cardW + gap;
+    let openLeft = false;
+    if (leftPos + drawerW > fieldW - 4 && cardLeft - drawerW - gap >= 4) {
+      leftPos = cardLeft - drawerW - gap;
+      openLeft = true;
+    } else if (leftPos + drawerW > fieldW - 4) {
+      leftPos = Math.max(4, fieldW - drawerW - 4);
     }
 
-    if (specimenImg) {
-      specimenImg.style.display = 'block';
-      specimenImg.onerror = () => {
-        specimenImg.style.display = 'none';
-      };
-      specimenImg.alt = `${person.name} portrait`;
-      specimenImg.src = `images/people/${person.img}`;
-    }
+    drawer.classList.toggle('open-left', openLeft);
+    drawer.style.left = `${Math.round(leftPos)}px`;
+    drawer.style.top = `${Math.max(4, Math.round(cardTop - 4))}px`;
 
-    if (specimenPeakList) {
-      specimenPeakList.innerHTML = person.peaks
-        .map(peak => `<li>${peak}</li>`)
-        .join('');
-    }
+    requestAnimationFrame(() => drawer.classList.add('is-visible'));
   }
+
+  field.addEventListener('click', (e) => {
+    if (!e.target.closest('.polaroid-card') && !e.target.closest('.polaroid-drawer')) {
+      closeDrawer();
+    }
+  });
 
   function renderScatter() {
     field.innerHTML = '';
@@ -681,11 +702,16 @@ const PEOPLE = [
         }
       });
 
-      card.addEventListener('click', () => selectPerson(person, card));
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectPerson(person, card, idx);
+      });
       card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          selectPerson(person, card);
+          selectPerson(person, card, idx);
+        } else if (e.key === 'Escape') {
+          closeDrawer();
         }
       });
 
