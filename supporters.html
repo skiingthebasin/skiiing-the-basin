@@ -161,6 +161,18 @@ a { color: inherit; text-decoration: none; }
   gap: 16px;
 }
 
+.brand-logo-link {
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.brand-logo-link:hover,
+.brand-logo-link:focus-visible {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
 .brand-logo {
   max-height: 54px;
   width: auto;
@@ -381,9 +393,16 @@ a { color: inherit; text-decoration: none; }
   min-width: 165px;
 }
 
+.ski-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
 .ski-badge {
   display: inline-block;
-  align-self: flex-start;
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
@@ -392,7 +411,39 @@ a { color: inherit; text-decoration: none; }
   color: var(--paper);
   background: var(--accent);
   padding: 3px 8px;
-  margin-bottom: 10px;
+}
+
+.ski-ext {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border: 1px solid var(--contour);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.ski-panel:hover .ski-ext,
+.ski-panel.is-open .ski-ext,
+.ski-panel:focus-within .ski-ext {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ski-ext:hover,
+.ski-ext:focus-visible {
+  color: var(--paper);
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: translate(1px, -1px);
 }
 
 .ski-title {
@@ -498,14 +549,11 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(-2px);
 }
 
-.partner-top {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  min-height: 28px;
-}
-
 .partner-ext {
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -534,14 +582,14 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 8px;
+  padding: 14px 8px 18px;
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .partner-card:hover .partner-logo-wrap,
 .partner-card.is-open .partner-logo-wrap,
 .partner-card:focus-within .partner-logo-wrap {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
 .partner-logo-wrap img {
@@ -556,6 +604,7 @@ a { color: inherit; text-decoration: none; }
 .partner-mission {
   border-top: 1px solid var(--contour);
   padding-top: 12px;
+  padding-right: 38px;
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
@@ -587,11 +636,12 @@ a { color: inherit; text-decoration: none; }
   margin: 0;
 }
 
-.palante-strip-banner {
+.palante-strip-banner,
+.partner-back {
   display: none;
 }
 
-/* Desktop Pa'lante Interactive Banner & 3-Card Flip */
+/* Desktop Pa'lante Static Frame + Video Swap & 3-Card Flip */
 @media (min-width: 961px) {
   .partners-stage {
     position: relative;
@@ -601,45 +651,50 @@ a { color: inherit; text-decoration: none; }
     display: block;
     position: relative;
     width: 100%;
-    height: 0;
-    max-height: 176px;
-    margin-bottom: 0;
-    opacity: 0;
-    overflow: hidden;
-    background: #181c1a;
-    border: 0 solid var(--ink);
-    box-shadow: 4px 4px 0 var(--contour-dark);
-    transform: translateY(-10px);
-    transition:
-      height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-      margin-bottom 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.28s ease,
-      transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-      border-width 0.2s ease;
-    pointer-events: none;
-  }
-
-  .partners-stage.is-palante-active .palante-strip-banner {
     height: 170px;
     margin-bottom: 16px;
-    opacity: 1;
-    border-width: 1.5px;
-    transform: translateY(0);
-    pointer-events: auto;
+    overflow: hidden;
+    background: #181c1a;
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--contour-dark);
   }
 
-  .palante-strip-banner video {
+  .palante-strip-banner img.palante-static-photo {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+
+  .palante-strip-banner video {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
     filter: contrast(1.08) saturate(0.92);
+    transition: opacity 0.2s ease;
+  }
+
+  .partners-stage.is-palante-active .palante-strip-banner video {
+    opacity: 1;
+  }
+
+  .partners-stage.is-palante-active .palante-strip-banner img.palante-static-photo {
+    opacity: 0;
   }
 
   .palante-strip-banner::after {
     content: "";
     position: absolute;
     inset: 0;
+    z-index: 2;
     background: repeating-linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0) 0px,
@@ -648,6 +703,16 @@ a { color: inherit; text-decoration: none; }
       rgba(18, 22, 20, 0.14) 4px
     );
     pointer-events: none;
+  }
+
+  /* Hide "What I use" copy on Pa'lante card while video/products are active on desktop */
+  .partners-stage.is-palante-active .partner-card.is-palante .partner-mission {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .partners-stage.is-palante-active .partner-card.is-palante .partner-logo-wrap {
+    transform: translateY(8px);
   }
 
   .partner-card {
@@ -703,6 +768,7 @@ a { color: inherit; text-decoration: none; }
   }
 
   .partner-back {
+    display: flex;
     position: absolute;
     inset: 0;
     transform: rotateY(180deg);
@@ -755,14 +821,24 @@ a { color: inherit; text-decoration: none; }
   .ski-front-half,
   .ski-side-img,
   .ski-detail-drawer,
-  .palante-strip-banner,
+  .palante-strip-banner img,
+  .palante-strip-banner video,
   .partner-inner {
     transition: none;
   }
 }
 
-/* Responsive Breakpoints: Horizontal Skis on Mobile */
+/* Responsive Breakpoints: Horizontal Skis & Simple Mobile Partner Cards */
 @media (max-width: 960px) {
+  .palante-strip-banner,
+  .partner-back {
+    display: none !important;
+  }
+
+  .partners-stage.is-palante-active .partner-card:not(.is-palante) .partner-inner {
+    transform: none !important;
+  }
+
   .quiver-accordion {
     flex-direction: column;
     gap: 8px;
@@ -976,13 +1052,21 @@ a { color: inherit; text-decoration: none; }
     <section class="brand-showcase" aria-label="Moment Skis Quiver">
       <div class="brand-header">
         <div class="brand-identity">
-          <img
-            src="images/moment/moment_logo.png"
-            alt="Moment Skis"
-            class="brand-logo"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          <a
+            href="https://www.momentskis.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="brand-logo-link"
+            aria-label="Visit Moment Skis website"
           >
-          <span style="display:none; font-family:var(--font-display); font-size:28px; font-weight:600; letter-spacing:-0.02em;">Moment Skis</span>
+            <img
+              src="images/moment/moment_logo.png"
+              alt="Moment Skis"
+              class="brand-logo"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+            >
+            <span style="display:none; font-family:var(--font-display); font-size:28px; font-weight:600; letter-spacing:-0.02em;">Moment Skis</span>
+          </a>
           <span class="brand-meta-tag">Reno, NV · My Current Quiver</span>
         </div>
         <p class="quiver-hint">Moment has been an ardent supporter since 2020. They make whatever ski they want, and I can guarantee you want whatever ski they make!</p>
@@ -994,6 +1078,11 @@ a { color: inherit; text-decoration: none; }
     <!-- Supporting Brands -->
     <div class="partners-stage" id="partnersStage">
       <div class="palante-strip-banner" id="palanteBanner" aria-hidden="true">
+        <img
+          class="palante-static-photo"
+          src="images/product_placeholder.webp"
+          alt=""
+        >
         <video
           id="palanteStripVideo"
           src="images/palante_banner.mp4"
@@ -1008,9 +1097,6 @@ a { color: inherit; text-decoration: none; }
         <article class="partner-card is-palante" data-partner="palante" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
-              <div class="partner-top">
-                <a class="partner-ext" href="https://palantepacks.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Pa'lante Packs website">&#8599;</a>
-              </div>
               <div class="partner-logo-wrap">
                 <img src="images/palante_logo.png" alt="Pa'lante Packs">
               </div>
@@ -1018,6 +1104,7 @@ a { color: inherit; text-decoration: none; }
                 <span class="partner-mission-label">What I use</span>
                 <p>Snow pack, sidebag for the camera, and turtle pack for MTB rides</p>
               </div>
+              <a class="partner-ext" href="https://palantepacks.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Pa'lante Packs website">&#8599;</a>
             </div>
           </div>
         </article>
@@ -1025,9 +1112,6 @@ a { color: inherit; text-decoration: none; }
         <article class="partner-card" data-slot="0" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
-              <div class="partner-top">
-                <a class="partner-ext" href="https://arcteryx.com/us/en" target="_blank" rel="noopener noreferrer" aria-label="Visit Arc'teryx website">&#8599;</a>
-              </div>
               <div class="partner-logo-wrap">
                 <img src="images/arcteryx_logo.png" alt="Arc'teryx">
               </div>
@@ -1035,6 +1119,7 @@ a { color: inherit; text-decoration: none; }
                 <span class="partner-mission-label">What I use</span>
                 <p>Outerwear and midlayers to keep the bitter air at bay</p>
               </div>
+              <a class="partner-ext" href="https://arcteryx.com/us/en" target="_blank" rel="noopener noreferrer" aria-label="Visit Arc'teryx website">&#8599;</a>
             </div>
             <div class="partner-face partner-back"></div>
           </div>
@@ -1043,9 +1128,6 @@ a { color: inherit; text-decoration: none; }
         <article class="partner-card" data-slot="1" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
-              <div class="partner-top">
-                <a class="partner-ext" href="https://www.camp.it/" target="_blank" rel="noopener noreferrer" aria-label="Visit CAMP website">&#8599;</a>
-              </div>
               <div class="partner-logo-wrap">
                 <img src="images/camp_logo.png" alt="CAMP">
               </div>
@@ -1053,6 +1135,7 @@ a { color: inherit; text-decoration: none; }
                 <span class="partner-mission-label">What I use</span>
                 <p>All the spikey and stringy bits (crampons, ice axe, harness, etc)</p>
               </div>
+              <a class="partner-ext" href="https://www.camp.it/" target="_blank" rel="noopener noreferrer" aria-label="Visit CAMP website">&#8599;</a>
             </div>
             <div class="partner-face partner-back"></div>
           </div>
@@ -1061,9 +1144,6 @@ a { color: inherit; text-decoration: none; }
         <article class="partner-card" data-slot="2" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
-              <div class="partner-top">
-                <a class="partner-ext" href="https://protectourwinters.org/" target="_blank" rel="noopener noreferrer" aria-label="Visit Protect Our Winters website">&#8599;</a>
-              </div>
               <div class="partner-logo-wrap">
                 <img src="images/pow_logo.png" alt="Protect Our Winters">
               </div>
@@ -1071,6 +1151,7 @@ a { color: inherit; text-decoration: none; }
                 <span class="partner-mission-label">Mission</span>
                 <p>Climate action everyone can get behind</p>
               </div>
+              <a class="partner-ext" href="https://protectourwinters.org/" target="_blank" rel="noopener noreferrer" aria-label="Visit Protect Our Winters website">&#8599;</a>
             </div>
             <div class="partner-face partner-back"></div>
           </div>
@@ -1088,6 +1169,7 @@ const MOMENT_QUIVER = [
     frontLeft: 'ski_C_front_01',
     frontRight: 'ski_C_front_02',
     name: 'Countach Tour 98',
+    url: 'https://www.momentskis.com/products/countach-tour-98',
     length: '170 cm',
     category: 'Big Vertical',
     waist: '98 mm',
@@ -1099,6 +1181,7 @@ const MOMENT_QUIVER = [
     frontLeft: 'ski_DWT_01',
     frontRight: 'ski_DWT_02',
     name: 'Deathwish Tour 104',
+    url: 'https://www.momentskis.com/products/deathwish-tour-104',
     length: '179 cm',
     category: 'Daily Drivers',
     waist: '104 mm',
@@ -1110,6 +1193,7 @@ const MOMENT_QUIVER = [
     frontLeft: 'ski_M_front_01',
     frontRight: 'ski_M_front_02',
     name: 'Meridian 107',
+    url: 'https://www.momentskis.com/products/meridian-107',
     length: '182 cm',
     category: 'Mank Tamers',
     waist: '107 mm',
@@ -1121,6 +1205,7 @@ const MOMENT_QUIVER = [
     frontLeft: 'ski_CB_01',
     frontRight: 'ski_CB_02',
     name: 'Chipotle Banana',
+    url: 'https://www.momentskis.com/products/chipotle-banana',
     length: '186 cm',
     category: 'Pow Pow',
     waist: '122 mm',
@@ -1162,7 +1247,16 @@ const MOMENT_QUIVER = [
 
       <div class="ski-detail-drawer">
         <div class="ski-specs">
-          <span class="ski-badge">${ski.category}</span>
+          <div class="ski-header-row">
+            <span class="ski-badge">${ski.category}</span>
+            <a
+              class="ski-ext"
+              href="${ski.url}"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View ${ski.name} on Moment Skis website"
+            >&#8599;</a>
+          </div>
           <h2 class="ski-title">${ski.name}</h2>
           <ul class="spec-list">
             <li><span class="spec-key">Length</span><span class="spec-val">${ski.length}</span></li>
@@ -1184,6 +1278,13 @@ const MOMENT_QUIVER = [
     `;
 
     const video = panel.querySelector('video');
+    const extLink = panel.querySelector('.ski-ext');
+
+    if (extLink) {
+      extLink.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
 
     const playClip = () => {
       if (video && video.paused) {
@@ -1225,7 +1326,7 @@ const MOMENT_QUIVER = [
   });
 })();
 
-// Desktop Pa'lante hover banner + 3 flipped gear cards
+// Desktop Pa'lante hover video swap + 3 flipped gear cards
 (function initPalanteDesktopShowcase() {
   const PALANTE_ITEMS = [
     {
@@ -1282,6 +1383,7 @@ const MOMENT_QUIVER = [
       stage.classList.remove('is-palante-active');
       if (video && !video.paused) {
         video.pause();
+        video.currentTime = 0;
       }
     }, 120);
   };
@@ -1289,7 +1391,7 @@ const MOMENT_QUIVER = [
   palanteCard.addEventListener('mouseenter', activatePalante);
   palanteCard.addEventListener('focusin', activatePalante);
   stage.addEventListener('mouseenter', () => {
-    if (stage.classList.contains('is-palante-active')) {
+    if (isDesktop() && stage.classList.contains('is-palante-active')) {
       clearTimeout(leaveTimer);
     }
   });
