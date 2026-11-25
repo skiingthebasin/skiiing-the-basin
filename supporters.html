@@ -691,7 +691,8 @@ a { color: inherit; text-decoration: none; }
   }
 
   .palante-strip-banner video {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 1;
     width: 100%;
     height: 100%;
@@ -702,11 +703,11 @@ a { color: inherit; text-decoration: none; }
     transition: opacity 0.2s ease;
   }
 
-  .partners-stage.is-palante-active .palante-strip-banner video {
+  .partners-stage.is-brand-active .palante-strip-banner video.is-playing {
     opacity: 1;
   }
 
-  .partners-stage.is-palante-active .palante-strip-banner img.palante-static-photo {
+  .partners-stage.is-brand-active .palante-strip-banner img.palante-static-photo {
     opacity: 0;
   }
 
@@ -725,13 +726,13 @@ a { color: inherit; text-decoration: none; }
     pointer-events: none;
   }
 
-  /* Hide "What I use" copy on Pa'lante card while video/products are active on desktop */
-  .partners-stage.is-palante-active .partner-card.is-palante .partner-mission {
+  /* Hide "What I use" copy on the active brand card while video/products are active on desktop */
+  .partners-stage.is-brand-active .partner-card.is-active-brand .partner-mission {
     opacity: 0;
     pointer-events: none;
   }
 
-  .partners-stage.is-palante-active .partner-card.is-palante .partner-logo-wrap {
+  .partners-stage.is-brand-active .partner-card.is-active-brand .partner-logo-wrap {
     transform: translateY(8px);
   }
 
@@ -760,7 +761,7 @@ a { color: inherit; text-decoration: none; }
     transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .partners-stage.is-palante-active .partner-card:not(.is-palante) .partner-inner {
+  .partners-stage.is-brand-active .partner-card:not(.is-active-brand) .partner-inner {
     transform: rotateY(180deg);
   }
 
@@ -780,8 +781,8 @@ a { color: inherit; text-decoration: none; }
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
 
-  .partner-card.is-palante:hover .partner-front,
-  .partner-card.is-palante.is-open .partner-front {
+  .partner-card.is-active-brand:hover .partner-front,
+  .partner-card.is-active-brand.is-open .partner-front {
     background: #ebeae4;
     border-color: var(--ink);
     transform: translateY(-2px);
@@ -855,7 +856,7 @@ a { color: inherit; text-decoration: none; }
     display: none !important;
   }
 
-  .partners-stage.is-palante-active .partner-card:not(.is-palante) .partner-inner {
+  .partners-stage.is-brand-active .partner-card:not(.is-active-brand) .partner-inner {
     transform: none !important;
   }
 
@@ -1121,18 +1122,13 @@ a { color: inherit; text-decoration: none; }
           src="images/product_placeholder.webp"
           alt=""
         >
-        <video
-          id="palanteStripVideo"
-          src="images/palante_banner.mp4"
-          muted
-          loop
-          playsinline
-          preload="metadata"
-        ></video>
+        <video data-brand="palante" src="images/palante_banner.mp4" muted loop playsinline preload="metadata"></video>
+        <video data-brand="arcteryx" src="images/arcteryx_banner.mp4" muted loop playsinline preload="metadata"></video>
+        <video data-brand="camp" src="images/camp_banner.mp4" muted loop playsinline preload="metadata"></video>
       </div>
 
       <section class="partners-grid" id="partnersGrid" aria-label="Supporting Brands">
-        <article class="partner-card is-palante" data-partner="palante" tabindex="0">
+        <article class="partner-card" data-brand-trigger="palante" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
               <div class="partner-logo-wrap">
@@ -1144,10 +1140,11 @@ a { color: inherit; text-decoration: none; }
               </div>
               <a class="partner-ext" href="https://palantepacks.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Pa'lante Packs website">&#8599;</a>
             </div>
+            <div class="partner-face partner-back"></div>
           </div>
         </article>
 
-        <article class="partner-card" data-slot="0" tabindex="0">
+        <article class="partner-card" data-brand-trigger="arcteryx" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
               <div class="partner-logo-wrap">
@@ -1163,7 +1160,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </article>
 
-        <article class="partner-card" data-slot="1" tabindex="0">
+        <article class="partner-card" data-brand-trigger="camp" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
               <div class="partner-logo-wrap">
@@ -1179,7 +1176,7 @@ a { color: inherit; text-decoration: none; }
           </div>
         </article>
 
-        <article class="partner-card" data-slot="2" tabindex="0">
+        <article class="partner-card" tabindex="0">
           <div class="partner-inner">
             <div class="partner-face partner-front">
               <div class="partner-logo-wrap">
@@ -1364,79 +1361,147 @@ const MOMENT_QUIVER = [
   });
 })();
 
-// Desktop Pa'lante hover video swap + 3 flipped gear cards
-(function initPalanteDesktopShowcase() {
-  const PALANTE_ITEMS = [
-    {
-      name: 'Snow Pack',
-      quip: 'Simple, light, and skis like a dream',
-      img: 'images/palante_snow.webp'
-    },
-    {
-      name: 'Sidebag',
-      quip: 'Makes my camera disappear while keeping it at my fingertips',
-      img: 'images/palante_sidebag.webp'
-    },
-    {
-      name: 'Turtle Pack',
-      quip: 'The perfect mountain biking pack',
-      img: 'images/palante_turtle.webp'
-    }
-  ];
+// Desktop Partner Showcase: Static Frame -> Brand Video + 3-Card Gear Flip (Pa'lante, Arc'teryx, CAMP)
+(function initPartnerDesktopShowcase() {
+  const BRAND_ITEMS = {
+    palante: [
+      {
+        name: 'Snow Pack',
+        quip: 'Simple, light, and skis like a dream',
+        img: 'images/palante_snow.webp'
+      },
+      {
+        name: 'Sidebag',
+        quip: 'Makes my camera disappear while keeping it at my fingertips',
+        img: 'images/palante_sidebag.webp'
+      },
+      {
+        name: 'Turtle Pack',
+        quip: 'The perfect mountain biking pack',
+        img: 'images/palante_turtle.webp'
+      }
+    ],
+    arcteryx: [
+      {
+        name: 'Outerwear',
+        quip: 'Hefty Sabre kit on cold days, crazy light Norvan when the temps climb',
+        img: 'images/arcteryx_sabre.webp'
+      },
+      {
+        name: 'Midlayers',
+        quip: 'From the Cerium SL to the Squamish Hoody, something for every effort',
+        img: 'images/arcteryx_cerium.webp'
+      },
+      {
+        name: 'Footwear',
+        quip: 'Sylan runners for off-season fitness, Konseal boots for approaches',
+        img: 'images/arcteryx_footwear.webp'
+      }
+    ],
+    camp: [
+      {
+        name: 'Contour Skins',
+        quip: 'I always prefer packability and glide over grip',
+        img: 'images/camp_contour.webp'
+      },
+      {
+        name: 'Gloves',
+        quip: "I've tried many pairs, the G Tech Evo is truly my all-time fav",
+        img: 'images/camp_gloves.webp'
+      },
+      {
+        name: 'Spikey Bits',
+        quip: 'Superlight Nanotech crampons and Corsa axe makes packing a no-brainer',
+        img: 'images/camp_ice.webp'
+      }
+    ]
+  };
 
   const stage = document.getElementById('partnersStage');
-  const palanteCard = stage?.querySelector('.partner-card.is-palante');
-  const video = document.getElementById('palanteStripVideo');
-  const slotCards = stage?.querySelectorAll('.partner-card[data-slot]') || [];
+  const allCards = Array.from(stage?.querySelectorAll('.partner-card') || []);
+  const triggerCards = stage?.querySelectorAll('.partner-card[data-brand-trigger]') || [];
+  const videos = Array.from(stage?.querySelectorAll('.palante-strip-banner video[data-brand]') || []);
 
-  if (!stage || !palanteCard) return;
-
-  slotCards.forEach((card, idx) => {
-    const item = PALANTE_ITEMS[idx];
-    const back = card.querySelector('.partner-back');
-    if (!item || !back) return;
-    back.innerHTML = `
-      <div class="gear-photo-wrap">
-        <img src="${item.img}" alt="${item.name}">
-      </div>
-      <h3 class="gear-title">${item.name}</h3>
-      <p class="gear-quip">${item.quip}</p>
-    `;
-  });
+  if (!stage || !triggerCards.length) return;
 
   const isDesktop = () => window.matchMedia('(min-width: 961px)').matches;
   let leaveTimer = null;
+  let activeBrand = null;
 
-  const activatePalante = () => {
-    if (!isDesktop()) return;
-    clearTimeout(leaveTimer);
-    stage.classList.add('is-palante-active');
-    if (video && video.paused) {
-      video.play().catch(() => {});
-    }
+  const populateBacks = (brandKey) => {
+    const items = BRAND_ITEMS[brandKey] || [];
+    let itemIdx = 0;
+    allCards.forEach(card => {
+      if (card.dataset.brandTrigger === brandKey) return;
+      const back = card.querySelector('.partner-back');
+      const item = items[itemIdx++];
+      if (!back || !item) return;
+      back.innerHTML = `
+        <div class="gear-photo-wrap">
+          <img src="${item.img}" alt="${item.name}">
+        </div>
+        <h3 class="gear-title">${item.name}</h3>
+        <p class="gear-quip">${item.quip}</p>
+      `;
+    });
   };
 
-  const deactivatePalante = () => {
-    leaveTimer = setTimeout(() => {
-      stage.classList.remove('is-palante-active');
-      if (video && !video.paused) {
-        video.pause();
-        video.currentTime = 0;
+  const activateBrand = (brandKey, triggerCard) => {
+    if (!isDesktop() || !BRAND_ITEMS[brandKey]) return;
+    clearTimeout(leaveTimer);
+
+    if (activeBrand !== brandKey) {
+      populateBacks(brandKey);
+      activeBrand = brandKey;
+    }
+
+    allCards.forEach(c => c.classList.toggle('is-active-brand', c === triggerCard));
+    stage.classList.add('is-brand-active');
+
+    videos.forEach(v => {
+      if (v.dataset.brand === brandKey) {
+        v.classList.add('is-playing');
+        if (v.paused) v.play().catch(() => {});
+      } else {
+        v.classList.remove('is-playing');
+        if (!v.paused) {
+          v.pause();
+          v.currentTime = 0;
+        }
       }
+    });
+  };
+
+  const deactivateBrand = () => {
+    leaveTimer = setTimeout(() => {
+      activeBrand = null;
+      stage.classList.remove('is-brand-active');
+      allCards.forEach(c => c.classList.remove('is-active-brand'));
+      videos.forEach(v => {
+        v.classList.remove('is-playing');
+        if (!v.paused) {
+          v.pause();
+          v.currentTime = 0;
+        }
+      });
     }, 120);
   };
 
-  palanteCard.addEventListener('mouseenter', activatePalante);
-  palanteCard.addEventListener('focusin', activatePalante);
+  triggerCards.forEach(card => {
+    const brandKey = card.dataset.brandTrigger;
+    card.addEventListener('mouseenter', () => activateBrand(brandKey, card));
+    card.addEventListener('focusin', () => activateBrand(brandKey, card));
+  });
+
   stage.addEventListener('mouseenter', () => {
-    if (isDesktop() && stage.classList.contains('is-palante-active')) {
+    if (isDesktop() && stage.classList.contains('is-brand-active')) {
       clearTimeout(leaveTimer);
     }
   });
-  stage.addEventListener('mouseleave', deactivatePalante);
+  stage.addEventListener('mouseleave', deactivateBrand);
   stage.addEventListener('focusout', (e) => {
     if (!stage.contains(e.relatedTarget)) {
-      deactivatePalante();
+      deactivateBrand();
     }
   });
 })();

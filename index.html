@@ -210,10 +210,21 @@ a { color: inherit; text-decoration: none; }
   grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
   gap: 48px;
   align-items: start;
-  margin-bottom: 64px;
+  margin-bottom: 48px;
 }
 .intro-copy {
   min-width: 0;
+}
+
+/* Band 2: What is Prominence? + 3D Explainer */
+.prominence-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+  gap: 48px;
+  align-items: center;
+  padding-top: 48px;
+  border-top: 1px solid var(--contour);
+  margin-bottom: 64px;
 }
 
 /* Text Section Styles */
@@ -294,7 +305,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Embedded Ping-Pong Prominence Explainer */
 .prom-loop-card {
-  margin: 18px 0 0;
+  margin: 0;
   background: transparent;
 }
 .prom-loop-stage {
@@ -320,6 +331,7 @@ a { color: inherit; text-decoration: none; }
   .intro-grid {
     grid-template-columns: 1fr;
     gap: 32px;
+    margin-bottom: 36px;
   }
   .intro-copy {
     display: contents;
@@ -327,7 +339,12 @@ a { color: inherit; text-decoration: none; }
   .section-block--idea { order: 1; margin-bottom: 0; }
   .floating-map { order: 2; }
   .section-block--why { order: 3; margin-bottom: 0; }
-  .section-block--prominence { order: 4; margin-bottom: 0; }
+  .prominence-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-top: 36px;
+    margin-bottom: 48px;
+  }
   .basin-svg {
     max-width: 360px;
   }
@@ -393,7 +410,7 @@ a { color: inherit; text-decoration: none; }
 
   <main class="content-container">
     <div class="intro-grid">
-      <!-- Left: Project Text Content -->
+      <!-- Left: The Idea + Why? -->
       <div class="intro-copy">
         <div class="section-block section-block--idea">
           <h2>The Idea</h2>
@@ -404,23 +421,26 @@ a { color: inherit; text-decoration: none; }
           <h2>Why?</h2>
           <p>To lure myself into skiing Nevada’s lesser-visited places. Nevada offers several lifetimes of adventure skiing, get out and experience it for yourself!</p>
         </div>
-
-        <div class="section-block section-block--prominence">
-          <h2>What is Prominence?</h2>
-          <p>Prominence is a method of quantifying a peak’s relief. It is essentially the minimum vertical drop you could descend from a given peak to climb to a higher summit. Due to it’s unique basin & range geology, Nevada has more highly prominent peaks than any other state in the Lower 48.</p>
-          <figure class="prom-loop-card" aria-label="Animated 3D diagram explaining topographic prominence between Mount Moriah and Wheeler Peak">
-            <div class="prom-loop-stage">
-              <canvas id="promCanvas"></canvas>
-              <svg id="promOverlay" aria-hidden="true"></svg>
-            </div>
-          </figure>
-        </div>
       </div>
 
       <!-- Right: Clean Floating Non-Interactive Great Basin + Nevada + Peaks Graphic -->
       <div class="floating-map" aria-hidden="true">
         <svg id="basinOverviewSvg" class="basin-svg" preserveAspectRatio="xMidYMid meet"></svg>
       </div>
+    </div>
+
+    <div class="prominence-grid">
+      <div class="section-block section-block--prominence">
+        <h2>What is Prominence?</h2>
+        <p>Prominence is a method of quantifying a peak’s relief. It is essentially the minimum vertical drop you could descend from a given peak to climb to a higher summit. Due to it’s unique basin & range geology, Nevada has more highly prominent peaks than any other state in the Lower 48.</p>
+      </div>
+
+      <figure class="prom-loop-card" aria-label="Animated 3D diagram explaining topographic prominence between Mount Moriah and Wheeler Peak">
+        <div class="prom-loop-stage">
+          <canvas id="promCanvas"></canvas>
+          <svg id="promOverlay" aria-hidden="true"></svg>
+        </div>
+      </figure>
     </div>
 
     <!-- Acknowledgements Box -->
