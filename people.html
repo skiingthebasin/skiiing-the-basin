@@ -339,9 +339,15 @@ a { color: inherit; text-decoration: none; }
 .polaroid-drawer.open-left {
   transform: translateX(10px) scale(0.97);
 }
+.polaroid-drawer.open-above {
+  transform: translateY(8px) scale(0.97);
+}
+.polaroid-drawer.open-below {
+  transform: translateY(-8px) scale(0.97);
+}
 .polaroid-drawer.is-visible {
   opacity: 1;
-  transform: translateX(0) scale(1);
+  transform: translate(0, 0) scale(1);
 }
 .drawer-top {
   display: flex;
@@ -602,26 +608,44 @@ const PEOPLE = [
     field.appendChild(drawer);
     activeDrawer = drawer;
 
-    // Position flush next to the selected Polaroid (to the right if room, otherwise to the left)
+    // Position next to Polaroid on desktop, or cleanly above/below Polaroid on mobile so the photo stays visible
     const fieldW = field.clientWidth || 820;
     const cardLeft = cardEl.offsetLeft;
     const cardTop = cardEl.offsetTop;
     const cardW = cardEl.offsetWidth;
+    const cardH = cardEl.offsetHeight;
     const drawerW = drawer.offsetWidth || 248;
+    const drawerH = drawer.offsetHeight || 220;
     const gap = 10;
 
-    let leftPos = cardLeft + cardW + gap;
-    let openLeft = false;
-    if (leftPos + drawerW > fieldW - 4 && cardLeft - drawerW - gap >= 4) {
-      leftPos = cardLeft - drawerW - gap;
-      openLeft = true;
-    } else if (leftPos + drawerW > fieldW - 4) {
-      leftPos = Math.max(4, fieldW - drawerW - 4);
-    }
+    if (window.innerWidth <= 820) {
+      const cardRect = cardEl.getBoundingClientRect();
+      const inLowerHalf = (cardRect.top + cardRect.height / 2) > (window.innerHeight * 0.52);
+      const canOpenAbove = cardTop - drawerH - gap >= 4;
+      const openAbove = inLowerHalf && canOpenAbove;
 
-    drawer.classList.toggle('open-left', openLeft);
-    drawer.style.left = `${Math.round(leftPos)}px`;
-    drawer.style.top = `${Math.max(4, Math.round(cardTop - 4))}px`;
+      const leftPos = Math.max(4, Math.min(fieldW - drawerW - 4, cardLeft + (cardW - drawerW) / 2));
+      const topPos = openAbove
+        ? Math.max(4, cardTop - drawerH - gap)
+        : cardTop + cardH + gap;
+
+      drawer.classList.add(openAbove ? 'open-above' : 'open-below');
+      drawer.style.left = `${Math.round(leftPos)}px`;
+      drawer.style.top = `${Math.round(topPos)}px`;
+    } else {
+      let leftPos = cardLeft + cardW + gap;
+      let openLeft = false;
+      if (leftPos + drawerW > fieldW - 4 && cardLeft - drawerW - gap >= 4) {
+        leftPos = cardLeft - drawerW - gap;
+        openLeft = true;
+      } else if (leftPos + drawerW > fieldW - 4) {
+        leftPos = Math.max(4, fieldW - drawerW - 4);
+      }
+
+      drawer.classList.toggle('open-left', openLeft);
+      drawer.style.left = `${Math.round(leftPos)}px`;
+      drawer.style.top = `${Math.max(4, Math.round(cardTop - 4))}px`;
+    }
 
     requestAnimationFrame(() => drawer.classList.add('is-visible'));
   }

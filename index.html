@@ -319,8 +319,15 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 860px) {
   .intro-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 32px;
   }
+  .intro-copy {
+    display: contents;
+  }
+  .section-block--idea { order: 1; margin-bottom: 0; }
+  .floating-map { order: 2; }
+  .section-block--why { order: 3; margin-bottom: 0; }
+  .section-block--prominence { order: 4; margin-bottom: 0; }
   .basin-svg {
     max-width: 360px;
   }
@@ -388,17 +395,17 @@ a { color: inherit; text-decoration: none; }
     <div class="intro-grid">
       <!-- Left: Project Text Content -->
       <div class="intro-copy">
-        <div class="section-block">
+        <div class="section-block section-block--idea">
           <h2>The Idea</h2>
           <p>To ski every peak in Nevada, USA with over 3,000‘ of prominence.</p>
         </div>
 
-        <div class="section-block">
+        <div class="section-block section-block--why">
           <h2>Why?</h2>
           <p>To lure myself into skiing Nevada’s lesser-visited places. Nevada offers several lifetimes of adventure skiing, get out and experience it for yourself!</p>
         </div>
 
-        <div class="section-block">
+        <div class="section-block section-block--prominence">
           <h2>What is Prominence?</h2>
           <p>Prominence is a method of quantifying a peak’s relief. It is essentially the minimum vertical drop you could descend from a given peak to climb to a higher summit. Due to it’s unique basin & range geology, Nevada has more highly prominent peaks than any other state in the Lower 48.</p>
           <figure class="prom-loop-card" aria-label="Animated 3D diagram explaining topographic prominence between Mount Moriah and Wheeler Peak">
@@ -652,8 +659,8 @@ a { color: inherit; text-decoration: none; }
   const PROM_FT = MORIAH_FT - KEYCOL_FT;
   const EXAG = 3.8;
 
-  // Camera (3/4 block view)
-  const YAW = -1.24, PITCH = 0.46, DIST = 3.68, TARGET_Y = 0.04;
+  // Camera (3/4 block view, framed with generous left margin for migrating plane & badge)
+  const YAW = -1.24, PITCH = 0.46, DIST = 4.08, TARGET_X = -0.04, TARGET_Y = 0.04, TARGET_Z = -0.10;
 
   const uvToXZ = (u, v) => [(u - 0.5) * SPAN_X, (v - 0.5) * SPAN_Z];
   const elevToY = ft => (ft - BASE_FT) * FT_TO_WORLD * EXAG;
@@ -1133,10 +1140,10 @@ a { color: inherit; text-decoration: none; }
       canvas.height = Math.round(cssH * dpr);
     }
 
-    const eyeX = Math.cos(PITCH) * Math.sin(YAW) * DIST;
+    const eyeX = TARGET_X + Math.cos(PITCH) * Math.sin(YAW) * DIST;
     const eyeY = TARGET_Y + Math.sin(PITCH) * DIST;
-    const eyeZ = Math.cos(PITCH) * Math.cos(YAW) * DIST;
-    const mvp = mat4Mul(mat4Perspective(34 * Math.PI / 180, cssW / Math.max(1, cssH), 0.1, 20.0), mat4LookAt([eyeX, eyeY, eyeZ], [0, TARGET_Y, 0], [0, 1, 0]));
+    const eyeZ = TARGET_Z + Math.cos(PITCH) * Math.cos(YAW) * DIST;
+    const mvp = mat4Mul(mat4Perspective(34 * Math.PI / 180, cssW / Math.max(1, cssH), 0.1, 20.0), mat4LookAt([eyeX, eyeY, eyeZ], [TARGET_X, TARGET_Y, TARGET_Z], [0, 1, 0]));
 
     if (use2D) {
       render2D(mvp, cssW, cssH, dpr, planeFt);
